@@ -1,46 +1,57 @@
-import { Container } from '@/components/shared/Container';
-import { Logo } from '@/components/shared/Logo';
-import { PlusMark } from '@/components/shared/PlusMark';
-import { VariantPickerCard } from '@/components/shared/VariantPickerCard';
+import { CanonicalHeader } from '@/components/canonical/CanonicalHeader';
+import { CanonicalHero } from '@/components/canonical/CanonicalHero';
+import { CanonicalPartners } from '@/components/canonical/CanonicalPartners';
+import { CanonicalFeatureBand } from '@/components/canonical/CanonicalFeatureBand';
+import { CanonicalSystems } from '@/components/canonical/CanonicalSystems';
+import { CanonicalSelectedWork } from '@/components/canonical/CanonicalSelectedWork';
+import { CanonicalProcess } from '@/components/canonical/CanonicalProcess';
+import { CanonicalPartnership } from '@/components/canonical/CanonicalPartnership';
+import { CanonicalContact } from '@/components/canonical/CanonicalContact';
+import { CanonicalFooter } from '@/components/canonical/CanonicalFooter';
 
-export default function PickerPage() {
+export const metadata = {
+  title: 'TMPal — Where design meets making.',
+};
+
+export default function HomePage() {
   return (
-    <main id="main" className="min-h-dvh bg-editorial text-navy-500">
-      <header className="border-b border-navy-100/40">
-        <Container className="flex items-center justify-between py-6">
-          <Logo tone="dark" className="text-2xl md:text-3xl" />
-          <span className="font-sans text-fluid-xs uppercase tracking-[0.18em] text-navy-400">
-            Internal preview
-          </span>
-        </Container>
-      </header>
-
-      <section className="py-section-y">
-        <Container className="flex flex-col gap-block-y">
-          <div className="flex max-w-3xl flex-col gap-6">
-            <div className="flex items-center gap-4 text-red-intextor">
-              <PlusMark className="h-6 w-6" />
-              <span className="font-sans text-fluid-sm font-medium uppercase tracking-[0.18em]">
-                Three directions for the same homepage
-              </span>
-            </div>
-            <h1 className="font-serif text-fluid-display leading-[1.02] text-navy-500">
-              Where design meets <span className="italic">making.</span>
-            </h1>
-            <p className="text-fluid-lg leading-relaxed text-navy-400">
-              Three motion choreographies for the TMPal brand mark. Open each one — assembly,
-              deconstruct-and-reassemble, or drawn-then-materialised — and compare them at
-              full scroll.
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            <VariantPickerCard variant="v1" />
-            <VariantPickerCard variant="v2" />
-            <VariantPickerCard variant="v3" />
-          </div>
-        </Container>
-      </section>
-    </main>
+    <>
+      <CanonicalHeader />
+      <main id="main">
+        <section id="home">
+          <CanonicalHero />
+        </section>
+        <CanonicalPartners />
+        <CanonicalFeatureBand
+          tone="dark"
+          quote={<>More than a symbol — a structural form.</>}
+          image="/projects/intersection-mark.png"
+        />
+        <CanonicalSystems />
+        <CanonicalFeatureBand
+          tone="light"
+          quote="Inspired by engineered intersections."
+          image="/projects/x-mark.png"
+          imageOnRight
+        />
+        <CanonicalSelectedWork />
+        <CanonicalProcess />
+        <CanonicalFeatureBand
+          tone="red"
+          quote={
+            <>
+              Everything happens at TMP.
+              <br />
+              Design through finish, one facility.
+            </>
+          }
+          image="/projects/intersection-mark.png"
+          imageOnRight
+        />
+        <CanonicalPartnership />
+        <CanonicalContact />
+      </main>
+      <CanonicalFooter />
+    </>
   );
 }
