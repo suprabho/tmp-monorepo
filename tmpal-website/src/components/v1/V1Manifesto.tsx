@@ -1,5 +1,5 @@
 'use client';
-import { m, useScroll, useSpring, useTransform } from 'framer-motion';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { PlusMark } from '@/components/shared/PlusMark';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
@@ -92,7 +92,7 @@ export function V1Manifesto() {
       {/* Sticky cross stage spanning the whole section */}
       <div className="pointer-events-none absolute inset-0">
         <div className="sticky top-0 flex h-dvh items-center justify-center">
-          <m.div
+          <motion.div
             className="relative h-[clamp(220px,40vw,520px)] w-[clamp(220px,40vw,520px)]"
             style={
               reduced
@@ -105,7 +105,7 @@ export function V1Manifesto() {
             }
           >
             {/* Top-left fragment */}
-            <m.div
+            <motion.div
               className={cn('absolute inset-0')}
               style={
                 reduced
@@ -117,13 +117,13 @@ export function V1Manifesto() {
                     }
               }
             >
-              <m.div className="h-full w-full" style={{ color: fragmentFill }}>
+              <motion.div className="h-full w-full" style={{ color: fragmentFill }}>
                 <PlusMark className="h-full w-full" fill="currentColor" />
-              </m.div>
-            </m.div>
+              </motion.div>
+            </motion.div>
 
             {/* Bottom-right fragment */}
-            <m.div
+            <motion.div
               className={cn('absolute inset-0')}
               style={
                 reduced
@@ -135,11 +135,11 @@ export function V1Manifesto() {
                     }
               }
             >
-              <m.div className="h-full w-full" style={{ color: fragmentFill }}>
+              <motion.div className="h-full w-full" style={{ color: fragmentFill }}>
                 <PlusMark className="h-full w-full" fill="currentColor" />
-              </m.div>
-            </m.div>
-          </m.div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 'use client';
-import { m, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import Link from 'next/link';
 import { Container } from '@/components/shared/Container';
@@ -73,7 +73,7 @@ export function V2Hero() {
                 <CrossClipPhoto className="absolute inset-0 h-full w-full" />
 
                 {/* Metallic cross plate on top, in two halves that slide on scroll */}
-                <m.div
+                <motion.div
                   className="absolute inset-0"
                   style={
                     reduced
@@ -82,8 +82,8 @@ export function V2Hero() {
                   }
                 >
                   <PlusMark variant="metallic" className="h-full w-full" />
-                </m.div>
-                <m.div
+                </motion.div>
+                <motion.div
                   className="absolute inset-0"
                   style={
                     reduced
@@ -92,7 +92,7 @@ export function V2Hero() {
                   }
                 >
                   <PlusMark variant="metallic" className="h-full w-full" />
-                </m.div>
+                </motion.div>
               </div>
             </div>
           </div>

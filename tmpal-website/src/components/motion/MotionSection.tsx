@@ -1,5 +1,5 @@
 'use client';
-import { m } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { ReactNode, HTMLAttributes } from 'react';
 import { sectionVariants } from '@/lib/motion';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
@@ -50,7 +50,7 @@ export function MotionSection({
   }
 
   return (
-    <m.section
+    <motion.section
       className={className}
       initial="hidden"
       whileInView="visible"
@@ -59,6 +59,6 @@ export function MotionSection({
       {...rest}
     >
       {children}
-    </m.section>
+    </motion.section>
   );
 }

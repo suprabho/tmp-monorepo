@@ -1,5 +1,5 @@
 'use client';
-import { AnimatePresence, m } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/cn';
@@ -36,7 +36,7 @@ export function MobileDrawer({ open, onClose, tone = 'light' }: MobileDrawerProp
     <AnimatePresence>
       {open && (
         <>
-          <m.div
+          <motion.div
             className="fixed inset-0 z-40 bg-navy-700/40 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -45,7 +45,7 @@ export function MobileDrawer({ open, onClose, tone = 'light' }: MobileDrawerProp
             onClick={onClose}
             aria-hidden
           />
-          <m.aside
+          <motion.aside
             role="dialog"
             aria-modal="true"
             aria-label="Site navigation"
@@ -86,7 +86,7 @@ export function MobileDrawer({ open, onClose, tone = 'light' }: MobileDrawerProp
             <div className="p-6">
               <ContactCTA tone={tone} className="w-full" size="lg" />
             </div>
-          </m.aside>
+          </motion.aside>
         </>
       )}
     </AnimatePresence>

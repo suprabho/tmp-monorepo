@@ -1,5 +1,5 @@
 'use client';
-import { m, useScroll, useSpring, useTransform } from 'framer-motion';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { PlusMark } from '@/components/shared/PlusMark';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
@@ -57,7 +57,7 @@ export function V2Manifesto() {
 
       <div className="pointer-events-none absolute inset-0">
         <div className="sticky top-0 flex h-dvh items-center justify-center">
-          <m.div
+          <motion.div
             className="relative h-[clamp(220px,40vw,520px)] w-[clamp(220px,40vw,520px)]"
             style={
               reduced
@@ -65,7 +65,7 @@ export function V2Manifesto() {
                 : { rotate, scale, opacity, x: bridgeX, y: bridgeY }
             }
           >
-            <m.div
+            <motion.div
               className="absolute inset-0"
               style={
                 reduced
@@ -74,8 +74,8 @@ export function V2Manifesto() {
               }
             >
               <PlusMark variant="metallic" className="h-full w-full" />
-            </m.div>
-            <m.div
+            </motion.div>
+            <motion.div
               className="absolute inset-0"
               style={
                 reduced
@@ -84,8 +84,8 @@ export function V2Manifesto() {
               }
             >
               <PlusMark variant="metallic" className="h-full w-full" />
-            </m.div>
-          </m.div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </div>
