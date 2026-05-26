@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { m } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/cn';
 import { PlusMark } from './PlusMark';
 import type { Variant, VariantTheme } from '@/lib/theme';
@@ -53,14 +53,14 @@ export function VariantPickerCard({
       </div>
 
       <div className="relative h-32 md:h-44">
-        <m.div
+        <motion.div
           className="absolute inset-0 grid place-items-center"
           initial={{ rotate: 0 }}
           whileHover={{ rotate: 45, scale: 1.08 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           <PlusMark className={cn('h-full w-auto', palette.mark)} />
-        </m.div>
+        </motion.div>
       </div>
 
       <div className="flex flex-col gap-3">

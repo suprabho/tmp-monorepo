@@ -1,5 +1,5 @@
 'use client';
-import { m, useInView, useScroll, useTransform } from 'framer-motion';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { useRef } from 'react';
 import { Container } from '@/components/shared/Container';
@@ -27,7 +27,7 @@ import { cn } from '@/lib/cn';
  */
 
 const V3AluminiumCross = dynamic(
-  () => import('@/components/webgl/V3AluminiumCross').then((m) => m.V3AluminiumCross),
+  () => import('@/components/webgl/V3AluminiumCross').then((mod) => mod.V3AluminiumCross),
   { ssr: false, loading: () => <CrossPoster /> },
 );
 
@@ -85,7 +85,7 @@ export function V3EditorialStack() {
         <div className="sticky top-0 flex h-dvh items-center justify-end px-6 md:px-16">
           <div className="relative h-[clamp(220px,42vw,560px)] w-[clamp(220px,42vw,560px)]">
             {/* SVG layer — line-draw + fill */}
-            <m.svg
+            <motion.svg
               viewBox={CROSS_VIEWBOX}
               className="absolute inset-0 h-full w-full"
               style={reduced ? undefined : { opacity: svgOpacity }}
@@ -93,7 +93,7 @@ export function V3EditorialStack() {
             >
               <defs>
                 <mask id="v3-fill-mask">
-                  <m.rect
+                  <motion.rect
                     x="0"
                     y="0"
                     width="100"
@@ -105,7 +105,7 @@ export function V3EditorialStack() {
               </defs>
 
               {/* Outline being drawn */}
-              <m.path
+              <motion.path
                 d={crossPath}
                 fill="none"
                 stroke="#FE1116"
@@ -121,16 +121,16 @@ export function V3EditorialStack() {
 
               {/* Filled cross masked by the wipe rect */}
               <path d={crossPath} fill="#FE1116" mask="url(#v3-fill-mask)" />
-            </m.svg>
+            </motion.svg>
 
             {/* WebGL layer — crossfades in over the filled SVG */}
             {showWebGL ? (
-              <m.div
+              <motion.div
                 className="absolute inset-0"
                 style={{ opacity: webglOpacity }}
               >
                 <V3AluminiumCross className="h-full w-full" />
-              </m.div>
+              </motion.div>
             ) : null}
           </div>
         </div>
