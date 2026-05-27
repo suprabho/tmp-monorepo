@@ -46,7 +46,11 @@ export function V1Hero() {
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 55vw"
-              className="object-cover object-center"
+              // object-position biases the focal point toward the right so the
+              // rightmost patterned-screen detail stays in frame; any
+              // horizontal overflow crops from the left.
+              className="object-cover"
+              style={{ objectPosition: '85% center' }}
             />
           </div>
         </div>
