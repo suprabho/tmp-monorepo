@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Container } from '@/components/shared/Container';
 import { RevealText } from '@/components/motion/RevealText';
@@ -38,12 +39,15 @@ export function V1Hero() {
             </div>
           </div>
 
-          <div className="image-settle relative aspect-[5/4] w-full overflow-hidden rounded-3xl bg-gradient-to-br from-navy-100 via-slate-200 to-navy-300/40">
-            <div className="absolute inset-0 grid place-items-center text-navy-400/40">
-              <span className="font-sans text-fluid-sm uppercase tracking-[0.25em]">
-                Glass tower hero
-              </span>
-            </div>
+          <div className="image-settle relative aspect-[5/4] w-full">
+            <Image
+              src="/projects/v1-hero.png"
+              alt="Architectural metalwork — engineered façades, slim 42.9 MM sightlines and crafted metal detailing on a contemporary villa"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 55vw"
+              className="object-contain object-center"
+            />
           </div>
         </div>
       </Container>
