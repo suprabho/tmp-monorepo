@@ -14,10 +14,12 @@ const tabBase =
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-intextor focus-visible:ring-offset-2 ' +
   'lg:px-10 lg:py-3 lg:text-fluid-lg';
 
+// 173px fixed width, centred under each tab, dropped 1px below the
+// padding edge so the 5px bar sits flush over the 1px navy-50 bottom border.
 const tabUnderline =
-  'pointer-events-none absolute inset-x-6 bottom-0 h-[5px] origin-left scale-x-0 ' +
-  'bg-red-intextor transition-transform duration-base ease-out-quart group-hover:scale-x-100 ' +
-  'lg:inset-x-10';
+  'pointer-events-none absolute -bottom-px left-1/2 h-[5px] w-[173px] -translate-x-1/2 ' +
+  'origin-center scale-x-0 bg-red-intextor ' +
+  'transition-transform duration-base ease-out-quart group-hover:scale-x-100';
 
 export function V1Navigation() {
   const [open, setOpen] = useState(false);
