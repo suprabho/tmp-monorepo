@@ -1,12 +1,23 @@
 import type { Metadata, Viewport } from 'next';
-import { Instrument_Serif, Space_Grotesk } from 'next/font/google';
+import localFont from 'next/font/local';
+import { Space_Grotesk } from 'next/font/google';
 import { MotionConfig } from '@/components/motion/MotionConfig';
 import './globals.css';
 
-const instrumentSerif = Instrument_Serif({
-  subsets: ['latin'],
-  weight: ['400'],
-  style: ['normal', 'italic'],
+// Self-hosted Instrument Serif — TTFs live in ./fonts/.
+const instrumentSerif = localFont({
+  src: [
+    {
+      path: './fonts/InstrumentSerif-Regular.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: './fonts/InstrumentSerif-Italic.ttf',
+      weight: '400',
+      style: 'italic',
+    },
+  ],
   variable: '--font-instrument-serif',
   display: 'swap',
 });
