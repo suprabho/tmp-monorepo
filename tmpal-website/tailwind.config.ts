@@ -23,21 +23,51 @@ const config: Config = {
       colors: {
         red: {
           intextor: '#FE1116',
+          deep: '#EE2325',
+          rust: '#E73115',
+          pale: '#FC8EA6',
+          wash: '#FEE2E2',
           DEFAULT: '#FE1116',
         },
         navy: {
+          ink: '#0F172A',
           50: '#D5D9DF',
           100: '#B1B9C5',
           300: '#6A7A92',
           400: '#465A78',
           500: '#223A5E',
+          600: '#1B2E4B',
           700: '#142338',
         },
         slate: {
           200: '#E2E8F0',
+          250: '#94A3B8',
+          300: '#78909C',
+          350: '#8E9AAC',
+          400: '#6A7A92',
+          500: '#465A78',
+          600: '#475569',
+          700: '#334155',
           900: '#0F172A',
         },
+        stone: {
+          50: '#F2F4F5',
+          100: '#D5D9DF',
+          150: '#CED6DA',
+        },
+        bone: '#FDF8F7',
         editorial: '#FAF7F2',
+      },
+      borderRadius: {
+        'corner-tl': '126px 20px 20px 20px',
+        'corner-tr': '20px 126px 20px 20px',
+        'corner-br': '20px 20px 80px 20px',
+        'corner-bl': '20px 20px 20px 80px',
+      },
+      boxShadow: {
+        'tmp-1': '0px 1.27px 3.81px rgba(0, 0, 0, 0.10), 0px 0px 2.54px rgba(0, 0, 0, 0.07)',
+        'tmp-2': '0px 4px 16px rgba(15, 23, 42, 0.10), 0px 1px 2px rgba(15, 23, 42, 0.06)',
+        'tmp-3': '0px 18px 48px rgba(15, 23, 42, 0.18), 0px 2px 6px rgba(15, 23, 42, 0.08)',
       },
       fontFamily: {
         serif: ['var(--font-instrument-serif)', 'ui-serif', 'Georgia', 'serif'],
@@ -75,6 +105,12 @@ const config: Config = {
       transitionTimingFunction: {
         'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)',
         'inout-quart': 'cubic-bezier(0.76, 0, 0.24, 1)',
+        'out-quart': 'cubic-bezier(0.25, 1, 0.30, 1)',
+      },
+      transitionDuration: {
+        fast: '140ms',
+        base: '240ms',
+        slow: '480ms',
       },
       keyframes: {
         marquee: {
