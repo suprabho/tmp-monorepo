@@ -18,7 +18,7 @@ export function CanonicalHero({ onSeeWork }: CanonicalHeroProps) {
             roof.
           </p>
           <div className="mt-9 flex gap-4">
-            <Button variant="primary" size="lg" onClick={onSeeWork} href="#projects">
+            <Button variant="outline" size="lg" onClick={onSeeWork} href="#projects">
               See Our Work
             </Button>
           </div>

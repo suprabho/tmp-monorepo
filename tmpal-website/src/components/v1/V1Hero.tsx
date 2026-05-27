@@ -27,7 +27,7 @@ export function V1Hero() {
             <div className="flex flex-wrap items-center gap-4">
               <Link
                 href="#projects"
-                className="inline-flex items-center rounded-full bg-red-intextor px-6 py-3 font-sans text-fluid-base font-medium text-white transition-colors hover:bg-red-intextor/90"
+                className="inline-flex items-center border border-red-intextor bg-transparent px-6 py-3 font-sans text-fluid-base font-medium text-red-intextor transition-colors hover:bg-red-intextor/5"
               >
                 See Our Work
               </Link>

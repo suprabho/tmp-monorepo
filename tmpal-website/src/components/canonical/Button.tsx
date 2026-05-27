@@ -21,7 +21,7 @@ const variantCls: Record<Variant, string> = {
     'bg-slate-700 text-white hover:bg-slate-700/90 font-bold tracking-[-0.03em] ' +
     'px-7 py-3 text-fluid-lg leading-none',
   outline:
-    'bg-transparent text-red-intextor border-2 border-red-intextor hover:bg-red-intextor/5',
+    'bg-transparent text-red-intextor border border-red-intextor hover:bg-red-intextor/5',
 };
 
 const sizeCls: Record<Size, string> = {
