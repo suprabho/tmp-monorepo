@@ -14,7 +14,7 @@ export function V1Hero() {
   return (
     <section id="top" className="relative overflow-hidden bg-white pt-16 md:pt-24">
       <Container>
-        <div className="grid items-center gap-10 md:grid-cols-[1fr_1.1fr] md:gap-16">
+        <div className="grid items-center gap-10 border border-navy-100 p-6 md:grid-cols-[1fr_1.1fr] md:gap-16 md:p-10 lg:p-14">
           <div className="flex flex-col gap-6 md:gap-8">
             <RevealText
               words={[...HERO_HEADLINE]}
