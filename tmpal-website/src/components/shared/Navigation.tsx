@@ -38,9 +38,13 @@ export function Navigation({ tone = 'light', variant = 'solid-light' }: Navigati
             <Link
               key={item.href}
               href={item.href}
-              className="font-sans text-fluid-base font-medium tracking-tight hover:text-red-intextor"
+              className="group relative px-1 py-3 font-sans text-fluid-base font-medium tracking-tight transition-colors duration-fast ease-out-quart hover:text-red-intextor"
             >
               {item.label}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 bottom-1.5 h-[5px] origin-left scale-x-0 bg-red-intextor transition-transform duration-base ease-out-quart group-hover:scale-x-100"
+              />
             </Link>
           ))}
         </nav>

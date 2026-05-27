@@ -50,17 +50,18 @@ export function CanonicalHeader({ active = 'home', onNav }: CanonicalHeaderProps
               href={it.href}
               onClick={click(it.id)}
               className={cn(
-                'relative px-1 py-3 font-sans text-fluid-base transition-colors duration-fast ease-out-quart',
+                'group relative px-1 py-3 font-sans text-fluid-base transition-colors duration-fast ease-out-quart',
                 active === it.id ? 'text-red-intextor' : 'text-navy-600 hover:text-red-intextor',
               )}
             >
               {it.label}
-              {active === it.id && (
-                <span
-                  aria-hidden
-                  className="absolute inset-x-0 bottom-1.5 h-[2px] bg-red-intextor"
-                />
-              )}
+              <span
+                aria-hidden
+                className={cn(
+                  'pointer-events-none absolute inset-x-0 bottom-1.5 h-[5px] origin-left bg-red-intextor transition-transform duration-base ease-out-quart',
+                  active === it.id ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
+                )}
+              />
             </Link>
           ))}
         </nav>
