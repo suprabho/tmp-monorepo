@@ -1,9 +1,9 @@
 'use client';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { cn } from '@/lib/cn';
 import { Container } from '@/components/shared/Container';
+import { Logo } from '@/components/shared/Logo';
 import { MobileDrawer } from '@/components/shared/MobileDrawer';
 import { Button } from './Button';
 
@@ -37,14 +37,7 @@ export function CanonicalHeader({ active = 'home', onNav }: CanonicalHeaderProps
           className="inline-flex items-center"
           aria-label="TMPal — home"
         >
-          <Image
-            src="/brand/wordmark-tmpal.png"
-            alt="TMPal"
-            width={170}
-            height={38}
-            priority
-            className="h-[34px] w-auto md:h-[38px]"
-          />
+          <Logo tone="dark" className="h-9 md:h-10" />
         </Link>
 
         <nav
