@@ -17,7 +17,7 @@ export function V3Hero() {
               as="h1"
               className="font-serif text-fluid-display-lg leading-[1.02] text-navy-500"
             />
-            <p className="max-w-md text-fluid-lg leading-relaxed text-navy-400">
+            <p className="max-w-md font-serif text-fluid-2xl leading-tight text-navy-400">
               {HERO_SUBHEAD}
             </p>
             <button

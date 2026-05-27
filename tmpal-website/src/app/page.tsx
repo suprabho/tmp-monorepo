@@ -43,7 +43,7 @@ export default function ShowcasePage() {
             <h1 className="font-serif text-fluid-display leading-[1.02] text-navy-500">
               Where design meets <span className="italic">making.</span>
             </h1>
-            <p className="text-fluid-lg leading-relaxed text-navy-400">
+            <p className="font-serif text-fluid-2xl leading-tight text-navy-400">
               A showcase of the TMPal brand and the four design directions we&apos;ve explored for
               the marketing site. The mark — a red intersection plus — sits at the heart of the
               identity; each exploration treats it differently.

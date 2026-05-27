@@ -21,7 +21,7 @@ export function V1Hero() {
               emphasisUnderline
               className="font-serif text-fluid-display-lg leading-[1.02] text-navy-500"
             />
-            <p className="max-w-md text-fluid-lg leading-relaxed text-navy-400">
+            <p className="max-w-md font-serif text-fluid-2xl leading-tight text-navy-400">
               {HERO_SUBHEAD}
             </p>
             <div className="flex flex-wrap items-center gap-4">

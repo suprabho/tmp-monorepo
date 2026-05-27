@@ -10,8 +10,8 @@ export function CanonicalHero({ onSeeWork }: CanonicalHeroProps) {
     <section className="relative overflow-hidden">
       <div className="mx-auto grid w-full max-w-shell items-center gap-10 px-5 py-12 sm:px-8 md:grid-cols-2 md:gap-16 md:px-20 md:py-20">
         <div className="flex flex-col">
-          <h1 className="font-sans text-fluid-display-lg font-bold leading-[1.1] text-navy-600">
-            Where design meets making.
+          <h1 className="font-serif text-fluid-display-lg leading-[1.05] text-navy-600">
+            Where design meets <span className="italic">making.</span>
           </h1>
           <p className="mt-6 font-serif text-fluid-2xl leading-tight text-slate-500">
             Steel and aluminium architectural systems, engineered with intent and made under one
