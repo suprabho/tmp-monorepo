@@ -37,7 +37,7 @@ export function CanonicalHeader({ active = 'home', onNav }: CanonicalHeaderProps
           className="inline-flex items-center"
           aria-label="TMPal — home"
         >
-          <Logo tone="dark" className="h-9 md:h-10" />
+          <Logo tone="dark" className="text-3xl md:text-4xl" />
         </Link>
 
         <nav
