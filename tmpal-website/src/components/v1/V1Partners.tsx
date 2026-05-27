@@ -17,35 +17,38 @@ const partners = [
 ];
 
 /**
- * V1 partners strip — directly beneath the bordered hero.
+ * V1 partners strip — sits directly under the bordered hero.
  *
  *   - 1px #B1B9C5 (navy-100) hairline frame matches the hero border.
- *   - Compact vertical rhythm (py-5 / md:py-7) so the section reads as
- *     a quiet ribbon, not a heavy block.
- *   - Caption sits centred above the logos; logos themselves render in a
- *     single centred row at a uniform `h-10 md:h-12`. With identical
- *     heights and `w-auto`, both marks scale proportionally to their
- *     native aspect — PROCURAL reads wider, KMC reads square, but they
- *     share visual weight.
+ *   - "Partners with" caption sits flush left at the top of the box.
+ *   - Logos render inside fixed-size cells so each occupies the same
+ *     visual footprint (PROCURAL fills width-wise, KMC fills
+ *     height-wise via `object-contain`) — they read as equal weight.
+ *   - Cell dimensions chosen large enough that the row fills the
+ *     container without excessive empty space on either side.
  */
 export function V1Partners() {
   return (
     <section className="bg-white py-8 md:py-12">
       <Container>
-        <div className="flex flex-col items-center gap-5 border border-navy-100 px-6 py-5 md:gap-6 md:px-10 md:py-7">
+        <div className="flex flex-col gap-6 border border-navy-100 px-8 py-6 md:gap-8 md:px-12 md:py-8">
           <span className="font-sans text-fluid-xs uppercase tracking-[0.18em] text-navy-400">
             Partners with
           </span>
-          <div className="flex items-center justify-center gap-12 md:gap-20">
+          <div className="flex items-center justify-center gap-16 md:gap-28">
             {partners.map((p) => (
-              <Image
+              <div
                 key={p.name}
-                src={p.src}
-                alt={p.name}
-                width={p.width}
-                height={p.height}
-                className="h-10 w-auto md:h-12"
-              />
+                className="relative flex h-16 w-[200px] items-center justify-center md:h-24 md:w-[320px]"
+              >
+                <Image
+                  src={p.src}
+                  alt={p.name}
+                  width={p.width}
+                  height={p.height}
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
             ))}
           </div>
         </div>
