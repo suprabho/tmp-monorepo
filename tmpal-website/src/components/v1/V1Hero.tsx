@@ -15,26 +15,26 @@ export function V1Hero() {
     <section id="top" className="relative overflow-hidden bg-white pt-16 md:pt-24">
       <Container>
         <div className="grid items-stretch overflow-hidden border border-navy-100 md:grid-cols-[1fr_1.1fr]">
-          <div className="flex flex-col gap-6 p-6 md:gap-8 md:p-10 lg:p-14">
+          <div className="flex flex-col gap-7 p-6 md:p-10 lg:p-14">
             <RevealText
-              words={[...HERO_HEADLINE]}
+              words={HERO_HEADLINE.map((w) =>
+                'emphasis' in w && w.emphasis ? { ...w, className: 'text-red-intextor' } : w,
+              )}
               as="h1"
-              emphasisUnderline
-              className="font-serif text-fluid-display-lg leading-[1.02] text-navy-500"
+              className="font-serif text-fluid-display-lg leading-[1.08] text-navy-500"
             />
-            <p className="max-w-md font-serif text-fluid-2xl leading-tight text-navy-400">
+            <p className="max-w-md font-serif text-fluid-xl leading-[1.45] text-navy-400">
               {HERO_SUBHEAD}
             </p>
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="mt-2 flex flex-col gap-3">
               <Link
                 href="#projects"
-                className="inline-flex items-center border border-red-intextor bg-transparent px-6 py-3 font-sans text-fluid-base font-medium text-red-intextor transition-colors hover:bg-red-intextor/5"
+                className="inline-flex w-fit items-center border border-red-intextor bg-transparent px-6 py-3 font-sans text-fluid-base font-medium text-red-intextor transition-colors hover:bg-red-intextor/5"
               >
                 See Our Work
               </Link>
-              <span className="font-sans text-fluid-sm text-navy-400">
-                Trusted fabricator to{' '}
-                <span className="font-medium uppercase tracking-wider">Procural</span>
+              <span className="font-serif text-fluid-sm text-navy-400">
+                Trusted fabricator to procural
               </span>
             </div>
           </div>
