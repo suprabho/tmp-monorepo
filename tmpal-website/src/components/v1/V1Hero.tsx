@@ -14,8 +14,8 @@ export function V1Hero() {
   return (
     <section id="top" className="relative overflow-hidden bg-white pt-16 md:pt-24">
       <Container>
-        <div className="grid items-center gap-10 border border-navy-100 p-6 md:grid-cols-[1fr_1.1fr] md:gap-16 md:p-10 lg:p-14">
-          <div className="flex flex-col gap-6 md:gap-8">
+        <div className="grid items-stretch overflow-hidden border border-navy-100 md:grid-cols-[1fr_1.1fr]">
+          <div className="flex flex-col gap-6 p-6 md:gap-8 md:p-10 lg:p-14">
             <RevealText
               words={[...HERO_HEADLINE]}
               as="h1"
@@ -39,14 +39,14 @@ export function V1Hero() {
             </div>
           </div>
 
-          <div className="image-settle relative aspect-[5/4] w-full">
+          <div className="image-settle relative aspect-[5/4] w-full md:aspect-auto md:h-full">
             <Image
               src="/projects/v1-hero.png"
               alt="Architectural metalwork — engineered façades, slim 42.9 MM sightlines and crafted metal detailing on a contemporary villa"
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 55vw"
-              className="object-contain object-center"
+              className="object-cover object-center"
             />
           </div>
         </div>
