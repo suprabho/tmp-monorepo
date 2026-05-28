@@ -46,12 +46,12 @@ export function V1Hero() {
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 55vw"
-              // object-contain preserves the full architectural render inside
-              // the bordered cell — the image's own atmospheric framing
-              // (misty water bottom-left, soft top vignette) blends into the
-              // white container background, so the contain whitespace reads
-              // as part of the composition rather than as empty padding.
-              className="object-contain object-center"
+              // object-contain preserves the full architectural render
+              // inside the bordered cell. object-right pushes the image flush
+              // against the right border — any contain whitespace falls on
+              // the left side (where it blends into the misty atmospheric
+              // framing of the render) instead of leaving a gap on the right.
+              className="object-contain object-right"
             />
           </div>
         </div>
