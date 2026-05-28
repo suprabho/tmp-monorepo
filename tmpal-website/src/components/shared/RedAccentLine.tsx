@@ -4,9 +4,10 @@ import { cn } from '@/lib/cn';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 
 interface RedAccentLineProps {
-  /** Override classes on the outer positioning wrapper — pass any
-   *  position utilities here (e.g. `top-1/3`, `top-[60%]`). Defaults
-   *  to right-edge, vertically centred. */
+  /** Which edge of the parent section the line anchors to. Default `right`. */
+  side?: 'left' | 'right';
+  /** Extra utilities on the outer positioning wrapper — e.g. `top-1/3`,
+   *  `top-[60%]`, or vertical offset overrides. */
   className?: string;
 }
 
@@ -20,18 +21,22 @@ interface RedAccentLineProps {
  *   height : 144 px (Tailwind `h-36`)
  *   motion : scaleY 0 → 1, origin-top, 1.0 s, cubic-bezier(.22, 1, .36, 1)
  *
+ * The line is positioned absolutely inside its section, so it scrolls
+ * naturally with the section rather than being pinned to the viewport.
  * Animation fires once per session via framer-motion's whileInView.
  * Under prefers-reduced-motion, the line paints statically at full
  * height.
  */
-export function RedAccentLine({ className }: RedAccentLineProps) {
+export function RedAccentLine({ side = 'right', className }: RedAccentLineProps) {
   const reduced = useReducedMotionSafe();
+  const sideCls = side === 'left' ? 'left-0' : 'right-0';
 
   return (
     <div
       aria-hidden
       className={cn(
-        'pointer-events-none absolute right-0 top-1/2 z-10 h-36 w-3 -translate-y-1/2',
+        'pointer-events-none absolute top-1/2 z-10 h-36 w-3 -translate-y-1/2',
+        sideCls,
         className,
       )}
     >

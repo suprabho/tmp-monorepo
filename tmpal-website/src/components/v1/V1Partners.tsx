@@ -32,7 +32,7 @@ const partners = [
 export function V1Partners() {
   return (
     <section className="relative bg-white py-8 md:py-12">
-      <RedAccentLine />
+      <RedAccentLine side="left" />
       <Container>
         <div className="flex flex-col items-start gap-10 border border-navy-100 px-8 py-10 md:flex-row md:items-center md:gap-16 md:px-16 md:py-14 lg:px-20 lg:py-16 lg:gap-20">
           <h2
