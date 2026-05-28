@@ -3,6 +3,7 @@ import { SystemFamilies } from '@/components/shared/SystemFamilies';
 import { HowWeWork } from '@/components/shared/HowWeWork';
 import { ProcuralBlock } from '@/components/shared/ProcuralBlock';
 import { V1Hero } from '@/components/v1/V1Hero';
+import { V1Intersection } from '@/components/v1/V1Intersection';
 import { V1Manifesto } from '@/components/v1/V1Manifesto';
 import { V1Navigation } from '@/components/v1/V1Navigation';
 import { V1Partners } from '@/components/v1/V1Partners';
@@ -19,6 +20,7 @@ export default function V1Page() {
       <main id="main">
         <V1Hero />
         <V1Partners />
+        <V1Intersection />
         <V1Manifesto />
         <SystemFamilies tone="light" headline="System Families" />
         <V1SelectedWork />
