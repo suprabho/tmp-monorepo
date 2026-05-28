@@ -22,7 +22,7 @@ export function SystemFamilies({
     <MotionSection
       id="services"
       className={cn(
-        'py-section-y',
+        'pt-section-y pb-10',
         tone === 'dark' ? 'bg-navy-700 text-slate-200' : 'bg-white text-navy-500',
       )}
     >

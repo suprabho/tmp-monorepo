@@ -34,7 +34,7 @@ export function V1SelectedWork() {
   const prev = () => setIndex((i) => (i - 1 + total) % total);
 
   return (
-    <section id="projects" className="relative overflow-hidden bg-white pt-section-y">
+    <section id="projects" className="relative mt-20 overflow-hidden bg-white">
       {/* Section header */}
       <Container>
         <div className="mb-block-y flex items-center justify-between gap-4">
