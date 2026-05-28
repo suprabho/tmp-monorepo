@@ -1,9 +1,9 @@
 'use client';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { cn } from '@/lib/cn';
 import { Container } from '@/components/shared/Container';
+import { Logo } from '@/components/shared/Logo';
 import { MobileDrawer } from '@/components/shared/MobileDrawer';
 import { Button } from './Button';
 
@@ -37,14 +37,7 @@ export function CanonicalHeader({ active = 'home', onNav }: CanonicalHeaderProps
           className="inline-flex items-center"
           aria-label="TMPal — home"
         >
-          <Image
-            src="/brand/wordmark-tmpal.png"
-            alt="TMPal"
-            width={170}
-            height={38}
-            priority
-            className="h-[34px] w-auto md:h-[38px]"
-          />
+          <Logo tone="dark" className="text-3xl md:text-4xl" />
         </Link>
 
         <nav
@@ -57,17 +50,18 @@ export function CanonicalHeader({ active = 'home', onNav }: CanonicalHeaderProps
               href={it.href}
               onClick={click(it.id)}
               className={cn(
-                'relative px-1 py-3 font-sans text-fluid-base transition-colors duration-fast ease-out-quart',
+                'group relative px-1 py-3 font-sans text-fluid-base transition-colors duration-fast ease-out-quart',
                 active === it.id ? 'text-red-intextor' : 'text-navy-600 hover:text-red-intextor',
               )}
             >
               {it.label}
-              {active === it.id && (
-                <span
-                  aria-hidden
-                  className="absolute inset-x-0 bottom-1.5 h-[2px] bg-red-intextor"
-                />
-              )}
+              <span
+                aria-hidden
+                className={cn(
+                  'pointer-events-none absolute inset-x-0 bottom-1.5 h-[5px] origin-left bg-red-intextor transition-transform duration-base ease-out-quart',
+                  active === it.id ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
+                )}
+              />
             </Link>
           ))}
         </nav>

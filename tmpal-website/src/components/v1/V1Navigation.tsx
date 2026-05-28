@@ -8,11 +8,18 @@ import { MobileDrawer } from '@/components/shared/MobileDrawer';
 import { navItems } from '@/content/nav';
 
 const tabBase =
-  'inline-flex items-center justify-center border-y border-l border-navy-50 px-6 py-2.5 ' +
-  'font-sans uppercase tracking-[-0.03em] text-fluid-base text-navy-700 transition-colors ' +
-  'hover:bg-navy-50/40 hover:text-red-intextor ' +
+  'group relative inline-flex items-center justify-center border-y border-l border-navy-50 px-6 py-2.5 ' +
+  'font-sans uppercase tracking-[-0.03em] text-fluid-base text-navy-700 transition-colors duration-fast ease-out-quart ' +
+  'hover:text-red-intextor ' +
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-intextor focus-visible:ring-offset-2 ' +
   'lg:px-10 lg:py-3 lg:text-fluid-lg';
+
+// Spans the full tab box (inset-x-0) so the underline always sits inside the
+// selected item. Dropped 1px below the padding edge so the 5px bar sits flush
+// over the 1px navy-50 bottom border, replacing it entirely on hover.
+const tabUnderline =
+  'pointer-events-none absolute inset-x-0 -bottom-px h-[5px] origin-center scale-x-0 ' +
+  'bg-red-intextor transition-transform duration-base ease-out-quart group-hover:scale-x-100';
 
 export function V1Navigation() {
   const [open, setOpen] = useState(false);
@@ -32,6 +39,7 @@ export function V1Navigation() {
                   className={cn(tabBase, i === navItems.length - 1 && 'border-r')}
                 >
                   {item.label}
+                  <span aria-hidden className={tabUnderline} />
                 </Link>
               </li>
             ))}

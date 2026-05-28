@@ -47,7 +47,7 @@ export function V2Hero() {
               as="h1"
               className="font-serif text-fluid-display-lg leading-[1.02]"
             />
-            <p className="max-w-md text-fluid-lg leading-relaxed text-slate-200/80">
+            <p className="max-w-md font-serif text-fluid-2xl leading-tight text-slate-200/80">
               {HERO_SUBHEAD}
             </p>
             <div className="flex flex-wrap items-center gap-5">
