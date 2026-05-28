@@ -1,63 +1,138 @@
-import { MotionSection } from '@/components/motion/MotionSection';
+'use client';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
 import { Container } from '@/components/shared/Container';
 import { projects } from '@/content/projects';
 
 /**
- * V1's Selected Work. Editorial side-by-side layout: a wide image card
- * on the left and a prominent red "info" card on the right with the
- * project meta. Matches the Figma comp.
+ * V1 Selected Work — horizontal editorial card with prev/next nav.
+ *
+ *   ┌─ Section header ─────────────────────────────────────────┐
+ *   │  Selected Work                          Explore All →    │
+ *   ├──────────────────────────────────────────────────────────┤
+ *   │  ◀  ┌──────────────────┬────────────────────┐  ▶         │
+ *   │     │ project photo    │  Category          │            │
+ *   │     │ (hover: zoom)    │  Project Title     │            │
+ *   │     │                  │  Location, with X  │            │
+ *   │     │                  │  Description …     │            │
+ *   │     │                  │                2024│            │
+ *   │     └──────────────────┴────────────────────┘            │
+ *   │                  (1 px navy-100 border)                  │
+ *   │                  (5 px red bottom edge — always on)      │
+ *   └──────────────────────────────────────────────────────────┘
  */
 export function V1SelectedWork() {
-  const featured = projects[0];
+  const total = projects.length;
+  const [index, setIndex] = useState(0);
+  const project = projects[index];
+
+  const next = () => setIndex((i) => (i + 1) % total);
+  const prev = () => setIndex((i) => (i - 1 + total) % total);
+
   return (
-    <MotionSection id="projects" className="bg-white py-section-y">
+    <section id="projects" className="bg-white py-section-y">
       <Container>
-        <div className="mb-block-y flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
-          <div className="flex flex-col gap-3">
-            <span className="font-sans text-fluid-sm font-medium uppercase tracking-[0.18em] text-red-intextor">
-              Selected Work
-            </span>
-            <h2 className="max-w-2xl font-serif text-fluid-3xl text-navy-500">
-              Built where drawing met <em className="italic">steel.</em>
-            </h2>
-          </div>
-          <a
-            href="#explore"
-            className="font-sans text-fluid-sm font-medium uppercase tracking-[0.18em] text-navy-400 hover:text-red-intextor"
+        {/* Section header */}
+        <div className="mb-block-y flex items-center justify-between gap-4">
+          <h2 className="font-sans text-fluid-3xl font-medium text-navy-700">Selected Work</h2>
+          <Link
+            href="/v1/projects"
+            className="font-sans text-fluid-sm font-bold uppercase tracking-[0.08em] text-navy-700 transition-colors hover:text-red-intextor"
           >
-            Explore All →
-          </a>
+            Explore All
+          </Link>
         </div>
 
-        <article className="grid gap-4 md:grid-cols-[1.4fr_1fr] md:gap-6">
-          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-navy-100 md:aspect-[5/4]">
-            <div className="absolute inset-0 bg-gradient-to-br from-navy-100 via-slate-200 to-navy-300/40" />
-            <div className="absolute inset-0 grid place-items-center text-navy-400/40">
-              <span className="font-sans text-fluid-sm uppercase tracking-[0.25em]">
-                {featured.title}
-              </span>
+        {/* Card row with side nav arrows */}
+        <div className="flex items-stretch gap-4 md:gap-6">
+          <NavButton direction="prev" onClick={prev} aria-label="Previous project" />
+
+          {/* The card itself */}
+          <article className="group relative flex-1 border border-navy-100 bg-white">
+            <div className="grid md:grid-cols-[1.15fr_1fr]">
+              {/* Image (only this zooms on hover, clipped inside overflow-hidden) */}
+              <div className="relative aspect-[4/3] w-full overflow-hidden md:aspect-auto md:h-full">
+                <Image
+                  key={project.slug}
+                  src={project.image}
+                  alt={`${project.title} — ${project.location}`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
+                  className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+              </div>
+
+              {/* Content panel */}
+              <div className="relative flex flex-col p-7 md:p-12">
+                <span className="font-sans text-fluid-base font-bold text-navy-700">
+                  {project.familyLabel}
+                </span>
+                <h3 className="mt-3 font-sans text-fluid-display-sm font-bold leading-[1.05] text-navy-700">
+                  {project.title}
+                </h3>
+                <p className="mt-2 font-serif text-fluid-xl italic text-red-intextor">
+                  {project.location}
+                  {project.collaborator ? `. with ${project.collaborator}` : ''}
+                </p>
+                <p className="mt-6 max-w-md font-sans text-fluid-base leading-relaxed text-navy-500">
+                  {project.description}
+                </p>
+                <span className="mt-auto self-end pt-12 font-sans text-fluid-2xl text-navy-100">
+                  {project.year}
+                </span>
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col justify-between rounded-3xl bg-red-intextor p-7 text-white md:p-10">
-            <div>
-              <span className="font-sans text-fluid-xs font-medium uppercase tracking-[0.18em] text-white/80">
-                {featured.family.replace('-', ' ')}
-              </span>
-              <h3 className="mt-3 font-serif text-fluid-3xl leading-tight">{featured.title}</h3>
-              <p className="mt-2 font-serif italic text-fluid-lg text-white/90">
-                {featured.location}
-                {featured.collaborator && `, with ${featured.collaborator}`}
-              </p>
-            </div>
-            <div className="mt-10 flex items-center justify-between font-sans text-fluid-sm">
-              <span className="text-white/70">{featured.year}</span>
-              <span className="font-medium" aria-hidden>
-                →
-              </span>
-            </div>
-          </div>
-        </article>
+
+            {/* Red bottom border — always visible */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-[5px] bg-red-intextor"
+            />
+          </article>
+
+          <NavButton direction="next" onClick={next} aria-label="Next project" />
+        </div>
+
+        {/* Index counter (small, beneath the card, screen-reader friendly) */}
+        <p className="mt-6 text-center font-sans text-fluid-xs uppercase tracking-[0.18em] text-navy-300">
+          <span className="sr-only">Project </span>
+          {String(index + 1).padStart(2, '0')} <span aria-hidden>/</span> {String(total).padStart(2, '0')}
+        </p>
       </Container>
-    </MotionSection>
+    </section>
+  );
+}
+
+interface NavButtonProps {
+  direction: 'prev' | 'next';
+  onClick: () => void;
+  'aria-label': string;
+}
+
+function NavButton({ direction, onClick, ...rest }: NavButtonProps) {
+  const isPrev = direction === 'prev';
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="my-auto hidden h-11 w-11 shrink-0 items-center justify-center border border-navy-100 bg-white text-navy-500 transition-colors duration-200 ease-out hover:border-red-intextor hover:text-red-intextor md:inline-flex"
+      {...rest}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        width="18"
+        height="18"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+      >
+        {isPrev ? <path d="M19 12H5M11 5l-7 7 7 7" /> : <path d="M5 12h14M13 5l7 7-7 7" />}
+      </svg>
+    </button>
   );
 }
