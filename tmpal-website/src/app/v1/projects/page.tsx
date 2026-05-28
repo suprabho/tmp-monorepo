@@ -73,10 +73,11 @@ export default function V1ProjectsPage() {
                     </span>
                   </div>
 
-                  {/* Red bottom border — always visible */}
+                  {/* Red bottom accent — always visible, anchored
+                      bottom-left at ~1/3 of the card width. */}
                   <span
                     aria-hidden
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-[5px] bg-red-intextor"
+                    className="pointer-events-none absolute bottom-0 left-0 h-5 w-1/3 bg-red-intextor"
                   />
                 </article>
               </li>

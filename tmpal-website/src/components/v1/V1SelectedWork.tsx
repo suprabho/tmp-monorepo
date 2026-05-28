@@ -85,10 +85,12 @@ export function V1SelectedWork() {
               </div>
             </div>
 
-            {/* Red bottom border — always visible */}
+            {/* Red bottom accent — always visible, anchored bottom-left,
+                ~1/3 of the image column's width. */}
             <span
               aria-hidden
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-[5px] bg-red-intextor"
+              className="pointer-events-none absolute bottom-0 left-0 h-5 bg-red-intextor"
+              style={{ width: 'calc(100% * 1.15 / 2.15 / 3)' }}
             />
           </article>
 
