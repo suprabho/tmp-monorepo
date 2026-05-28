@@ -11,8 +11,8 @@ const partners = [
   {
     name: 'First KMC · Interior Hardware',
     src: '/projects/partner-firstkmc.png',
-    width: 580,
-    height: 580,
+    width: 645,
+    height: 630,
   },
 ];
 
