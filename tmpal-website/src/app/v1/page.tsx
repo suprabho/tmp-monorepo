@@ -22,7 +22,7 @@ export default function V1Page() {
         <V1Intersection />
         <SystemFamilies tone="light" headline="System Families" />
         <V1SelectedWork />
-        <HowWeWork tone="light" headline="How We Work" kicker="Process" />
+        <HowWeWork tone="light" headline="How We Work" />
         <ProcuralBlock tone="light" emphasis="subtle" />
       </main>
       <Footer tone="light" />
