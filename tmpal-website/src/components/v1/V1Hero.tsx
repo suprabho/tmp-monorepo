@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Container } from '@/components/shared/Container';
+import { RedAccentLine } from '@/components/shared/RedAccentLine';
 import { RevealText } from '@/components/motion/RevealText';
 import { HERO_HEADLINE, HERO_SUBHEAD } from '@/content/copy';
 
@@ -13,6 +14,7 @@ import { HERO_HEADLINE, HERO_SUBHEAD } from '@/content/copy';
 export function V1Hero() {
   return (
     <section id="top" className="relative overflow-hidden bg-white pt-16 md:pt-24">
+      <RedAccentLine />
       <Container>
         <div className="grid items-stretch overflow-hidden border border-navy-100 md:grid-cols-[1fr_1.1fr]">
           <div className="flex flex-col gap-7 p-6 md:p-10 lg:p-14">

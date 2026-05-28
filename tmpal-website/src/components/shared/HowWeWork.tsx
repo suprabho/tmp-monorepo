@@ -1,4 +1,5 @@
 import { Container } from './Container';
+import { RedAccentLine } from './RedAccentLine';
 import { MotionSection } from '../motion/MotionSection';
 import { processStages } from '@/content/process';
 import { cn } from '@/lib/cn';
@@ -27,10 +28,11 @@ export function HowWeWork({
     <MotionSection
       id="process"
       className={cn(
-        'py-section-y',
+        'relative py-section-y',
         isDark ? 'bg-navy-700 text-slate-200' : 'bg-white text-navy-400',
       )}
     >
+      <RedAccentLine />
       <Container>
         {/* Section heading */}
         <div className="mb-block-y flex flex-col gap-3">
