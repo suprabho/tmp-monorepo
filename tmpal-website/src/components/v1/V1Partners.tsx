@@ -33,7 +33,10 @@ export function V1Partners() {
     <section className="bg-white py-8 md:py-12">
       <Container>
         <div className="flex flex-col items-start gap-10 border border-navy-100 px-8 py-10 md:flex-row md:items-center md:gap-16 md:px-16 md:py-14 lg:px-20 lg:py-16 lg:gap-20">
-          <h2 className="shrink-0 font-sans text-fluid-display-sm font-normal leading-[1.05] text-navy-500">
+          <h2
+            className="shrink-0 font-serif leading-[1.1]"
+            style={{ fontSize: '40px', color: '#223A5E' }}
+          >
             Partners with
           </h2>
           <div className="flex w-full flex-1 items-center justify-center gap-16 md:gap-24 lg:gap-32">

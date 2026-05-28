@@ -40,10 +40,8 @@ export function HowWeWork({
             </span>
           ) : null}
           <h2
-            className={cn(
-              'font-sans text-fluid-display-sm font-medium leading-[1.05]',
-              isDark ? 'text-white' : 'text-navy-400',
-            )}
+            className={cn('font-serif leading-[1.1]', isDark && 'text-white')}
+            style={isDark ? undefined : { fontSize: '40px', color: '#223A5E' }}
           >
             {headline}
           </h2>

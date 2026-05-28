@@ -38,7 +38,12 @@ export function V1SelectedWork() {
       {/* Section header */}
       <Container>
         <div className="mb-block-y flex items-center justify-between gap-4">
-          <h2 className="font-sans text-fluid-3xl font-medium text-navy-700">Selected Work</h2>
+          <h2
+            className="font-serif leading-[1.1]"
+            style={{ fontSize: '40px', color: '#223A5E' }}
+          >
+            Selected Work
+          </h2>
           <Link
             href="/v1/projects"
             className="font-sans text-fluid-sm font-bold uppercase tracking-[0.08em] text-navy-700 transition-colors hover:text-red-intextor"
