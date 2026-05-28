@@ -8,44 +8,44 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-/* ─── Geometry (px) ─────────────────────────────────────────────
- * The two semi-* fragments tile precisely into tmpal-x-mark.png:
- *
- *   ┌────────────┐
- *   │  semi-x-1  │ … top-left anchor
- *   │            │
- *   │       ╲    │
- *   │        ╲   │
- *   │  semi-x-2  │ … bottom-right anchor
- *   └────────────┘
- *
- * Sizes are taken from the source PNGs so the proportions are exact —
- * no scaling, no stretching, no morphing on assembly.
+/* ─── Geometry (px, from source PNGs) ─────────────────────────
+ * The two semi-* fragments tile precisely into tmpal-x-mark.png
+ * when anchored to opposing corners of the X-mark bounding box.
+ * No scaling, no morphing — the assembled result is identical
+ * to the X-mark.
  */
 const X_MARK = { w: 917, h: 912 };
 const FRAG_1 = { w: 420, h: 424 }; // anchors top-left of X_MARK
 const FRAG_2 = { w: 408, h: 412 }; // anchors bottom-right of X_MARK
 
+/* ─── Stage colours (semantic) ─── */
+const NAVY = '#142338';
+const STONE = '#D5D9DF';
+const RED = '#FE1116';
+
 /**
  * V1 Intersection — pinned, scroll-scrubbed assembly of the brand mark.
  *
+ * Implementation pattern: the section has an explicit tall height
+ * (`min-h-[400vh]`) and the stage inside uses `position: sticky` to
+ * stay fixed in the viewport while the user scrolls through the
+ * section. GSAP ScrollTrigger then scrubs a single master timeline
+ * against the section's scroll progress (no pin: needed). This is
+ * more reliable across React StrictMode + Next.js than ScrollTrigger's
+ * own pin feature.
+ *
  * Strict phase sequence (normalised 0 → 1):
  *
- *   A · 0    → 0.40   Converge. Fragments translate only (no rotation,
- *                      scale, or morph) onto their corner anchors so the
+ *   A · 0    → 0.40   Converge. Fragments translate only — no rotation,
+ *                      scale, or morph — onto corner anchors so the
  *                      tiled result matches tmpal-X-mark exactly.
- *   B · 0.40 → 0.50   Hold connected on navy → stone cross-fade. No
- *                      movement on the mark itself.
- *   C · 0.50 → 0.95   One slow rotation (linear ease) across 45% of
- *                      the timeline. Starts only after assembly is
- *                      complete and the stage is grey.
+ *   B · 0.40 → 0.50   Hold. Stage cross-fades navy → stone. Assembled
+ *                      mark sits perfectly still.
+ *   C · 0.50 → 0.95   Single slow rotation (linear). Begins only after
+ *                      assembly is complete and the stage is grey.
  *   D · 0.82 → 0.95   Stone → red cross-fade during the last portion
- *                      of the rotation, so the spin completes ON the
- *                      red stage.
- *   E · 0.95 → 1.0    Settled. Assembled mark on red, perfectly stable.
- *
- * The section is pinned for the full timeline so the next section only
- * appears once the choreography settles in phase E.
+ *                      of the rotation, so the spin completes ON red.
+ *   E · 0.95 → 1.0    Settled. No tweens. Assembled mark on red, stable.
  */
 export function V1Intersection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -59,105 +59,94 @@ export function V1Intersection() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const ctx = gsap.context(() => {
-      // Initial offsets: fragments sit at 1.4× their own size away from the
-      // anchor, on the diagonal axis. Pure translation — no rotation, no
-      // scaling — so the fragments preserve their exact geometry.
-      gsap.set(frag1Ref.current, { xPercent: -140, yPercent: -140 });
-      gsap.set(frag2Ref.current, { xPercent: 140, yPercent: 140 });
-      gsap.set(groupRef.current, { rotation: 0 });
-      gsap.set(bgRef.current, { backgroundColor: '#142338' });
-      gsap.set(eyebrowRef.current, { color: 'rgba(255,255,255,0.55)' });
+    // ── Initial state (must run before any tweens) ──────────────
+    gsap.set(frag1Ref.current, { xPercent: -140, yPercent: -140 });
+    gsap.set(frag2Ref.current, { xPercent: 140, yPercent: 140 });
+    gsap.set(groupRef.current, { rotation: 0 });
+    gsap.set(bgRef.current, { backgroundColor: NAVY });
+    gsap.set(eyebrowRef.current, { color: 'rgba(255,255,255,0.55)' });
+    gsap.set(headlineRef.current, { color: '#ffffff' });
+
+    if (prefersReducedMotion) {
+      // Skip the choreography — land on the final assembled red state.
+      gsap.set([frag1Ref.current, frag2Ref.current], { xPercent: 0, yPercent: 0 });
+      gsap.set(bgRef.current, { backgroundColor: RED });
       gsap.set(headlineRef.current, { color: '#ffffff' });
+      gsap.set(eyebrowRef.current, { color: 'rgba(255,255,255,0.85)' });
+      return;
+    }
 
-      if (prefersReducedMotion) {
-        gsap.set([frag1Ref.current, frag2Ref.current], { xPercent: 0, yPercent: 0 });
-        gsap.set(bgRef.current, { backgroundColor: '#FE1116' });
-        gsap.set(headlineRef.current, { color: '#ffffff' });
-        gsap.set(eyebrowRef.current, { color: 'rgba(255,255,255,0.85)' });
-        return;
-      }
+    // ── Master timeline scrubbed by section scroll progress ─────
+    const tl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.6,
+        invalidateOnRefresh: true,
+      },
+    });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: '+=2800',
-          scrub: 1.2,
-          pin: stageRef.current,
-          pinSpacing: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      });
+    // ── Phase A · 0 → 0.40: converge ────────────────────────────
+    tl.to(
+      frag1Ref.current,
+      { xPercent: 0, yPercent: 0, duration: 0.40, ease: 'power2.inOut' },
+      0,
+    );
+    tl.to(
+      frag2Ref.current,
+      { xPercent: 0, yPercent: 0, duration: 0.40, ease: 'power2.inOut' },
+      0,
+    );
 
-      // ── Phase A (0 → 0.40): converge ──────────────────────────────
-      // Pure translation onto corner anchors. semi-x-1 glides down+right;
-      // semi-x-2 glides up+left. No other transforms, so the assembled
-      // result matches tmpal-X-mark exactly.
-      tl.to(
-        frag1Ref.current,
-        { xPercent: 0, yPercent: 0, duration: 0.40, ease: 'power2.inOut' },
-        0,
-      );
-      tl.to(
-        frag2Ref.current,
-        { xPercent: 0, yPercent: 0, duration: 0.40, ease: 'power2.inOut' },
-        0,
-      );
+    // ── Phase B · 0.40 → 0.50: hold + navy → stone ──────────────
+    tl.to(bgRef.current, { backgroundColor: STONE, duration: 0.10 }, 0.40);
+    tl.to(headlineRef.current, { color: NAVY, duration: 0.10 }, 0.40);
+    tl.to(eyebrowRef.current, { color: 'rgba(20,35,56,0.7)', duration: 0.10 }, 0.40);
 
-      // ── Phase B (0.40 → 0.50): hold + navy → stone cross-fade ─────
-      // No movement on the mark itself — it sits perfectly assembled
-      // while the stage transitions to grey beneath it. Eyebrow +
-      // headline shift to navy-on-stone in step.
-      tl.to(bgRef.current, { backgroundColor: '#D5D9DF', duration: 0.10, ease: 'none' }, 0.40);
-      tl.to(headlineRef.current, { color: '#142338', duration: 0.10, ease: 'none' }, 0.40);
-      tl.to(
-        eyebrowRef.current,
-        { color: 'rgba(20,35,56,0.7)', duration: 0.10, ease: 'none' },
-        0.40,
-      );
+    // ── Phase C · 0.50 → 0.95: slow single rotation ─────────────
+    tl.to(groupRef.current, { rotation: 360, duration: 0.45 }, 0.50);
 
-      // ── Phase C (0.50 → 0.95): slow single rotation ───────────────
-      // Linear ease across 45% of the timeline = one slow, steady turn.
-      // Rotation begins only after fragments are connected and the stage
-      // is grey, so the spin reads on the stone background.
-      tl.to(
-        groupRef.current,
-        { rotation: 360, duration: 0.45, ease: 'none' },
-        0.50,
-      );
+    // ── Phase D · 0.82 → 0.95: stone → red ──────────────────────
+    tl.to(bgRef.current, { backgroundColor: RED, duration: 0.13 }, 0.82);
+    tl.to(headlineRef.current, { color: '#ffffff', duration: 0.13 }, 0.82);
+    tl.to(eyebrowRef.current, { color: 'rgba(255,255,255,0.85)', duration: 0.13 }, 0.82);
 
-      // ── Phase D (0.82 → 0.95): stone → red while rotation finishes ─
-      // Background and text shift to red during the final portion of the
-      // rotation, so the spin completes ON the red stage rather than
-      // before it. By 0.95 the rotation has landed at 360° exactly.
-      tl.to(bgRef.current, { backgroundColor: '#FE1116', duration: 0.13, ease: 'none' }, 0.82);
-      tl.to(headlineRef.current, { color: '#ffffff', duration: 0.13, ease: 'none' }, 0.82);
-      tl.to(
-        eyebrowRef.current,
-        { color: 'rgba(255,255,255,0.85)', duration: 0.13, ease: 'none' },
-        0.82,
-      );
+    // ── Phase E · 0.95 → 1.0: settled (no tweens) ───────────────
 
-      // ── Phase E (0.95 → 1.0): perfectly stable ─────────────────────
-      // No tweens in this range — assembled X-mark on red stage, frozen.
-    }, sectionRef);
+    // Recalculate positions once the page/images have settled. Without
+    // this the trigger can latch onto pre-layout coordinates and the
+    // scrub will appear stuck.
+    const refreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 100);
 
-    return () => ctx.revert();
+    return () => {
+      window.clearTimeout(refreshTimer);
+      tl.scrollTrigger?.kill();
+      tl.kill();
+    };
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative">
-      <div ref={stageRef} className="relative h-screen w-full overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="relative w-full"
+      style={{ minHeight: '400vh' }}
+    >
+      <div
+        ref={stageRef}
+        className="sticky top-0 h-screen w-full overflow-hidden"
+      >
         <div ref={bgRef} className="absolute inset-0 bg-navy-700" />
 
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6">
           <div
             ref={eyebrowRef}
             className="mb-6 font-sans text-fluid-xs uppercase tracking-[0.24em]"
+            style={{ color: 'rgba(255,255,255,0.55)' }}
           >
             Where intent meets manufacture
           </div>
@@ -189,7 +178,8 @@ export function V1Intersection() {
                 fill
                 priority
                 sizes="(max-width: 1024px) 24vw, 14vw"
-                className="object-contain object-center"
+                className="object-contain object-center select-none"
+                draggable={false}
               />
             </div>
 
@@ -209,7 +199,8 @@ export function V1Intersection() {
                 fill
                 priority
                 sizes="(max-width: 1024px) 24vw, 14vw"
-                className="object-contain object-center"
+                className="object-contain object-center select-none"
+                draggable={false}
               />
             </div>
           </div>
@@ -217,6 +208,7 @@ export function V1Intersection() {
           <h2
             ref={headlineRef}
             className="mt-12 max-w-2xl text-center font-serif text-fluid-display-sm leading-[1.05]"
+            style={{ color: '#ffffff' }}
           >
             Two halves. <span className="italic">One mark.</span>
           </h2>
