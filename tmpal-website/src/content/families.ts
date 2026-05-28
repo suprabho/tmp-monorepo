@@ -2,7 +2,7 @@ export interface SystemFamily {
   slug: 'facades' | 'fenestration' | 'custom-metal';
   title: string;
   description: string;
-  /** Placeholder — replace with real photography during the asset extraction pass. */
+  /** Photograph used as the card hero. */
   image: string;
 }
 
@@ -12,20 +12,20 @@ export const families: SystemFamily[] = [
     title: 'Facades',
     description:
       'Unitised and stick-built curtain wall systems engineered for performance, finished to architectural intent.',
-    image: '/facades/placeholder.jpg',
+    image: '/projects/facades.png',
   },
   {
     slug: 'fenestration',
     title: 'Fenestration',
     description:
       'Slim-sightline windows and door systems built around the architectural detail you draw.',
-    image: '/fenestration/placeholder.jpg',
+    image: '/projects/fenestration.png',
   },
   {
     slug: 'custom-metal',
     title: 'Custom Metal',
     description:
       'Bespoke screens, cladding, and metal expressions — fabricated to drawings, not to catalog.',
-    image: '/custom-metal/placeholder.jpg',
+    image: '/projects/custom-metal.png',
   },
 ];
