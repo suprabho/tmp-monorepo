@@ -46,11 +46,12 @@ export function V1Hero() {
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 55vw"
-              // object-position biases the focal point toward the right so the
-              // rightmost patterned-screen detail stays in frame; any
-              // horizontal overflow crops from the left.
-              className="object-cover"
-              style={{ objectPosition: '85% center' }}
+              // object-contain preserves the full architectural render inside
+              // the bordered cell — the image's own atmospheric framing
+              // (misty water bottom-left, soft top vignette) blends into the
+              // white container background, so the contain whitespace reads
+              // as part of the composition rather than as empty padding.
+              className="object-contain object-center"
             />
           </div>
         </div>
