@@ -31,15 +31,15 @@ export function V1Partners() {
   return (
     <section className="bg-white py-8 md:py-12">
       <Container>
-        <div className="flex flex-col gap-6 border border-navy-100 px-8 py-6 md:gap-8 md:px-12 md:py-8">
+        <div className="flex flex-col gap-8 border border-navy-100 px-8 py-8 md:gap-12 md:px-16 md:py-12 lg:px-20 lg:py-14">
           <span className="font-sans text-fluid-xs uppercase tracking-[0.18em] text-navy-400">
             Partners with
           </span>
-          <div className="flex items-center justify-center gap-16 md:gap-28">
+          <div className="flex items-center justify-center gap-16 md:gap-32 lg:gap-40">
             {partners.map((p) => (
               <div
                 key={p.name}
-                className="relative flex h-16 w-[200px] items-center justify-center md:h-24 md:w-[320px]"
+                className="relative flex h-28 w-[220px] items-center justify-center md:h-44 md:w-[400px] lg:h-52 lg:w-[480px]"
               >
                 <Image
                   src={p.src}
