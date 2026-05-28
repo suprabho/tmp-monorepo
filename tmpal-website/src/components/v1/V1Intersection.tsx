@@ -29,16 +29,23 @@ const FRAG_2 = { w: 408, h: 412 }; // anchors bottom-right of X_MARK
 /**
  * V1 Intersection — pinned, scroll-scrubbed assembly of the brand mark.
  *
- * Choreography:
- *   0 → 70%   semi-x-1 glides down-right from off-stage; semi-x-2 glides
- *             up-left. Both translate only — no rotation, scale or
- *             shape morph — and land at their corner anchors so the
- *             tiled result reproduces the tmpal-X-mark exactly.
- *   70 →100%  Assembled mark rotates a full turn; stage cross-fades
- *             navy → stone → red; eyebrow + headline follow.
+ * Strict phase sequence (normalised 0 → 1):
+ *
+ *   A · 0    → 0.40   Converge. Fragments translate only (no rotation,
+ *                      scale, or morph) onto their corner anchors so the
+ *                      tiled result matches tmpal-X-mark exactly.
+ *   B · 0.40 → 0.50   Hold connected on navy → stone cross-fade. No
+ *                      movement on the mark itself.
+ *   C · 0.50 → 0.95   One slow rotation (linear ease) across 45% of
+ *                      the timeline. Starts only after assembly is
+ *                      complete and the stage is grey.
+ *   D · 0.82 → 0.95   Stone → red cross-fade during the last portion
+ *                      of the rotation, so the spin completes ON the
+ *                      red stage.
+ *   E · 0.95 → 1.0    Settled. Assembled mark on red, perfectly stable.
  *
  * The section is pinned for the full timeline so the next section only
- * appears once the rotation settles.
+ * appears once the choreography settles in phase E.
  */
 export function V1Intersection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -77,7 +84,7 @@ export function V1Intersection() {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
-          end: '+=2400',
+          end: '+=2800',
           scrub: 1.2,
           pin: stageRef.current,
           pinSpacing: true,
@@ -86,40 +93,57 @@ export function V1Intersection() {
         },
       });
 
-      // ── Phase 1 (0 → 0.7): pure translation onto corner anchors ──
-      // semi-x-1 translates DOWN + RIGHT (xPercent / yPercent → 0)
-      // semi-x-2 translates UP + LEFT
+      // ── Phase A (0 → 0.40): converge ──────────────────────────────
+      // Pure translation onto corner anchors. semi-x-1 glides down+right;
+      // semi-x-2 glides up+left. No other transforms, so the assembled
+      // result matches tmpal-X-mark exactly.
       tl.to(
         frag1Ref.current,
-        { xPercent: 0, yPercent: 0, duration: 0.7, ease: 'power2.inOut' },
+        { xPercent: 0, yPercent: 0, duration: 0.40, ease: 'power2.inOut' },
         0,
       );
       tl.to(
         frag2Ref.current,
-        { xPercent: 0, yPercent: 0, duration: 0.7, ease: 'power2.inOut' },
+        { xPercent: 0, yPercent: 0, duration: 0.40, ease: 'power2.inOut' },
         0,
       );
 
-      // ── Phase 2 (0.7 → 1.0): rotate assembled mark + colour cross-fade ──
+      // ── Phase B (0.40 → 0.50): hold + navy → stone cross-fade ─────
+      // No movement on the mark itself — it sits perfectly assembled
+      // while the stage transitions to grey beneath it. Eyebrow +
+      // headline shift to navy-on-stone in step.
+      tl.to(bgRef.current, { backgroundColor: '#D5D9DF', duration: 0.10, ease: 'none' }, 0.40);
+      tl.to(headlineRef.current, { color: '#142338', duration: 0.10, ease: 'none' }, 0.40);
+      tl.to(
+        eyebrowRef.current,
+        { color: 'rgba(20,35,56,0.7)', duration: 0.10, ease: 'none' },
+        0.40,
+      );
+
+      // ── Phase C (0.50 → 0.95): slow single rotation ───────────────
+      // Linear ease across 45% of the timeline = one slow, steady turn.
+      // Rotation begins only after fragments are connected and the stage
+      // is grey, so the spin reads on the stone background.
       tl.to(
         groupRef.current,
-        { rotation: 360, duration: 0.3, ease: 'power2.out' },
-        0.7,
+        { rotation: 360, duration: 0.45, ease: 'none' },
+        0.50,
       );
-      tl.to(bgRef.current, { backgroundColor: '#D5D9DF', duration: 0.15, ease: 'none' }, 0.7);
-      tl.to(bgRef.current, { backgroundColor: '#FE1116', duration: 0.15, ease: 'none' }, 0.85);
-      tl.to(headlineRef.current, { color: '#142338', duration: 0.15, ease: 'none' }, 0.7);
-      tl.to(headlineRef.current, { color: '#ffffff', duration: 0.15, ease: 'none' }, 0.85);
+
+      // ── Phase D (0.82 → 0.95): stone → red while rotation finishes ─
+      // Background and text shift to red during the final portion of the
+      // rotation, so the spin completes ON the red stage rather than
+      // before it. By 0.95 the rotation has landed at 360° exactly.
+      tl.to(bgRef.current, { backgroundColor: '#FE1116', duration: 0.13, ease: 'none' }, 0.82);
+      tl.to(headlineRef.current, { color: '#ffffff', duration: 0.13, ease: 'none' }, 0.82);
       tl.to(
         eyebrowRef.current,
-        { color: 'rgba(20,35,56,0.7)', duration: 0.15, ease: 'none' },
-        0.7,
+        { color: 'rgba(255,255,255,0.85)', duration: 0.13, ease: 'none' },
+        0.82,
       );
-      tl.to(
-        eyebrowRef.current,
-        { color: 'rgba(255,255,255,0.85)', duration: 0.15, ease: 'none' },
-        0.85,
-      );
+
+      // ── Phase E (0.95 → 1.0): perfectly stable ─────────────────────
+      // No tweens in this range — assembled X-mark on red stage, frozen.
     }, sectionRef);
 
     return () => ctx.revert();
