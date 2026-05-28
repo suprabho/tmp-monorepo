@@ -7,22 +7,22 @@ export interface ProcessStage {
 export const processStages: ProcessStage[] = [
   {
     index: 1,
-    title: 'Understanding',
+    title: 'We understand the vision.',
     body: 'We work closely with architects and designers from the initial concept stage to understand the design intent, materiality, and technical requirements.',
   },
   {
     index: 2,
-    title: 'Engineering',
-    body: 'Every detail is carefully studied — load paths, joinery, finishes — so the drawing can become a system that performs.',
+    title: 'We engineer with precision.',
+    body: 'Every detail is carefully studied, prototyped, and optimized for fabrication, ensuring accuracy, strength, and clean execution.',
   },
   {
     index: 3,
-    title: 'Fabrication',
-    body: 'Advanced laser cutting, CNC machining, and hand-finishing inside one facility. The maker reads the same drawing the architect drew.',
+    title: 'We fabricate with expertise.',
+    body: 'Using advanced laser cutting, metal processing, and finishing techniques, we transform ideas into high-quality architectural products.',
   },
   {
     index: 4,
-    title: 'Delivery',
-    body: 'From production to installation, we support execution on site so the finished work reflects the original intent.',
+    title: 'We deliver and support execution.',
+    body: 'From production to installation support, we ensure smooth coordination so the final outcome matches the original vision perfectly.',
   },
 ];

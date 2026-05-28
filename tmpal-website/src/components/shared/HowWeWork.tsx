@@ -28,26 +28,21 @@ export function HowWeWork({
       id="process"
       className={cn(
         'py-section-y',
-        isDark ? 'bg-navy-700 text-slate-200' : 'bg-editorial text-navy-700',
+        isDark ? 'bg-navy-700 text-slate-200' : 'bg-white text-navy-400',
       )}
     >
       <Container>
         {/* Section heading */}
         <div className="mb-block-y flex flex-col gap-3">
           {kicker ? (
-            <span
-              className={cn(
-                'font-sans text-fluid-xs font-bold uppercase tracking-[0.18em]',
-                isDark ? 'text-red-intextor' : 'text-red-intextor',
-              )}
-            >
+            <span className="font-sans text-fluid-xs font-bold uppercase tracking-[0.18em] text-red-intextor">
               {kicker}
             </span>
           ) : null}
           <h2
             className={cn(
               'font-sans text-fluid-display-sm font-medium leading-[1.05]',
-              isDark ? 'text-white' : 'text-navy-700',
+              isDark ? 'text-white' : 'text-navy-400',
             )}
           >
             {headline}
@@ -70,7 +65,7 @@ export function HowWeWork({
               <h3
                 className={cn(
                   'font-sans text-fluid-2xl font-bold leading-[1.15]',
-                  isDark ? 'text-white' : 'text-navy-700',
+                  isDark ? 'text-white' : 'text-navy-400',
                 )}
               >
                 {stage.title}
@@ -80,7 +75,7 @@ export function HowWeWork({
               <p
                 className={cn(
                   'mt-4 font-sans text-fluid-base leading-relaxed',
-                  isDark ? 'text-slate-200/80' : 'text-navy-500',
+                  isDark ? 'text-slate-200/80' : 'text-navy-400',
                 )}
               >
                 {stage.body}
