@@ -6,21 +6,24 @@ import { Container } from '@/components/shared/Container';
 import { projects } from '@/content/projects';
 
 /**
- * V1 Selected Work — horizontal editorial card with prev/next nav.
+ * V1 Selected Work — horizontal editorial card sitting on top of a
+ * large red architectural plane.
  *
- *   ┌─ Section header ─────────────────────────────────────────┐
- *   │  Selected Work                          Explore All →    │
- *   ├──────────────────────────────────────────────────────────┤
- *   │  ◀  ┌──────────────────┬────────────────────┐  ▶         │
- *   │     │ project photo    │  Category          │            │
- *   │     │ (hover: zoom)    │  Project Title     │            │
- *   │     │                  │  Location, with X  │            │
- *   │     │                  │  Description …     │            │
- *   │     │                  │                2024│            │
- *   │     └──────────────────┴────────────────────┘            │
- *   │                  (1 px navy-100 border)                  │
- *   │                  (5 px red bottom edge — always on)      │
- *   └──────────────────────────────────────────────────────────┘
+ *   ┌── Section header ──────────────────────────────────────────┐
+ *   │  Selected Work                            Explore All →    │
+ *   ├────────────────────────────────────────────────────────────┤
+ *   │  ◀  ┌──────────────────┬────────────────────┐  ▶           │
+ *   │     │ grayscale photo  │  Category          │              │
+ *   │     │ (hover: zoom)    │  Project Title     │              │
+ *   │     │                  │  Location, with X  │              │
+ *   │     │                  │  Description …     │              │
+ *   │     │                  │                2024│              │
+ *   │     └──────────────────┴────────────────────┘              │
+ *   │ ███████████████████████████████████████████████████████████│ ← red plane
+ *   │ ███████████████████████████████████████████████████████████│   (full-bleed,
+ *   │ ███████████████████████████████████████████████████████████│    behind card,
+ *   │ ███████████████████████████████████████████████████████████│    extends below)
+ *   └────────────────────────────────────────────────────────────┘
  */
 export function V1SelectedWork() {
   const total = projects.length;
@@ -31,9 +34,9 @@ export function V1SelectedWork() {
   const prev = () => setIndex((i) => (i - 1 + total) % total);
 
   return (
-    <section id="projects" className="bg-white py-section-y">
+    <section id="projects" className="relative overflow-hidden bg-white pt-section-y">
+      {/* Section header */}
       <Container>
-        {/* Section header */}
         <div className="mb-block-y flex items-center justify-between gap-4">
           <h2 className="font-sans text-fluid-3xl font-medium text-navy-700">Selected Work</h2>
           <Link
@@ -43,66 +46,66 @@ export function V1SelectedWork() {
             Explore All
           </Link>
         </div>
-
-        {/* Card row with side nav arrows */}
-        <div className="flex items-stretch gap-4 md:gap-6">
-          <NavButton direction="prev" onClick={prev} aria-label="Previous project" />
-
-          {/* The card itself */}
-          <article className="group relative flex-1 border border-navy-100 bg-white">
-            <div className="grid md:grid-cols-[1.15fr_1fr]">
-              {/* Image (only this zooms on hover, clipped inside overflow-hidden) */}
-              <div className="relative aspect-[4/3] w-full overflow-hidden md:aspect-auto md:h-full">
-                <Image
-                  key={project.slug}
-                  src={project.image}
-                  alt={`${project.title} — ${project.location}`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  priority
-                  className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-              </div>
-
-              {/* Content panel */}
-              <div className="relative flex flex-col p-7 md:p-12">
-                <span className="font-sans text-fluid-base font-bold text-navy-700">
-                  {project.familyLabel}
-                </span>
-                <h3 className="mt-3 font-sans text-fluid-display-sm font-bold leading-[1.05] text-navy-700">
-                  {project.title}
-                </h3>
-                <p className="mt-2 font-serif text-fluid-xl italic text-red-intextor">
-                  {project.location}
-                  {project.collaborator ? `. with ${project.collaborator}` : ''}
-                </p>
-                <p className="mt-6 max-w-md font-sans text-fluid-base leading-relaxed text-navy-500">
-                  {project.description}
-                </p>
-                <span className="mt-auto self-end pt-12 font-sans text-fluid-2xl text-navy-100">
-                  {project.year}
-                </span>
-              </div>
-            </div>
-
-            {/* Red bottom accent — always visible, anchored bottom-left,
-                ~1/3 of the image column's width. */}
-            <span
-              aria-hidden
-              className="pointer-events-none absolute bottom-0 left-0 h-5 bg-red-intextor"
-              style={{ width: 'calc(100% * 1.15 / 2.15 / 3)' }}
-            />
-          </article>
-
-          <NavButton direction="next" onClick={next} aria-label="Next project" />
-        </div>
-
-        {/* Index counter (small, beneath the card, screen-reader friendly) */}
-        <p className="mt-6 text-center font-sans text-fluid-xs uppercase tracking-[0.18em] text-navy-300">
-          <span className="sr-only">Project </span>
-          {String(index + 1).padStart(2, '0')} <span aria-hidden>/</span> {String(total).padStart(2, '0')}
-        </p>
       </Container>
+
+      {/* Wrapper for the card + the red background plane.
+          pb-* reserves space below the card so the red plane visibly
+          extends past the bottom of the card. */}
+      <div className="relative pb-16 md:pb-24">
+        {/* Large red architectural plane — sits behind the lower portion
+            of the card. Full-bleed (no Container) so it extends to the
+            viewport edges; the section's overflow-hidden caps it. */}
+        <div
+          aria-hidden
+          className="absolute bottom-0 left-0 right-0 h-[200px] bg-red-intextor md:h-[240px]"
+        />
+
+        {/* Card row — relative + z to stack above the red plane */}
+        <Container className="relative z-10">
+          <div className="flex items-stretch gap-4 md:gap-6">
+            <NavButton direction="prev" onClick={prev} aria-label="Previous project" />
+
+            <article className="group flex-1 border border-navy-100 bg-white">
+              <div className="grid md:grid-cols-[1.15fr_1fr]">
+                {/* Image — grayscale by default; only this element zooms on hover. */}
+                <div className="relative aspect-[4/3] w-full overflow-hidden md:aspect-auto md:h-full">
+                  <Image
+                    key={project.slug}
+                    src={project.image}
+                    alt={`${project.title} — ${project.location}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority
+                    className="object-cover object-center grayscale transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                </div>
+
+                {/* Content panel */}
+                <div className="relative flex flex-col p-7 md:p-12">
+                  <span className="font-sans text-fluid-base font-bold text-navy-700">
+                    {project.familyLabel}
+                  </span>
+                  <h3 className="mt-3 font-sans text-fluid-display-sm font-bold leading-[1.05] text-navy-700">
+                    {project.title}
+                  </h3>
+                  <p className="mt-2 font-serif text-fluid-xl italic text-red-intextor">
+                    {project.location}
+                    {project.collaborator ? `. with ${project.collaborator}` : ''}
+                  </p>
+                  <p className="mt-6 max-w-md font-sans text-fluid-base leading-relaxed text-navy-500">
+                    {project.description}
+                  </p>
+                  <span className="mt-auto self-end pt-12 font-sans text-fluid-2xl text-navy-100">
+                    {project.year}
+                  </span>
+                </div>
+              </div>
+            </article>
+
+            <NavButton direction="next" onClick={next} aria-label="Next project" />
+          </div>
+        </Container>
+      </div>
     </section>
   );
 }
