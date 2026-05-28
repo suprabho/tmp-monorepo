@@ -28,7 +28,6 @@ export function SystemFamilies({
     >
       <Container>
         <SectionHeader
-          kicker="What we make"
           title={
             headline === 'System Families' ? (
               headline
