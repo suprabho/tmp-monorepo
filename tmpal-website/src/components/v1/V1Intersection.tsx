@@ -232,21 +232,35 @@ export function V1Intersection() {
             <h2
               ref={line1Ref}
               className={lineCls}
-              style={{ color: '#ffffff', willChange: 'transform, opacity' }}
+              style={{
+                color: '#ffffff',
+                opacity: 1,
+                willChange: 'transform, opacity',
+              }}
             >
               {MANIFESTO.one}
             </h2>
             <h2
               ref={line2Ref}
               className={lineCls}
-              style={{ color: NAVY, willChange: 'transform, opacity' }}
+              style={{
+                color: NAVY,
+                opacity: 0,
+                transform: 'translateY(40px)',
+                willChange: 'transform, opacity',
+              }}
             >
               {MANIFESTO.two}
             </h2>
             <h2
               ref={line3Ref}
               className={lineCls}
-              style={{ color: '#ffffff', willChange: 'transform, opacity' }}
+              style={{
+                color: '#ffffff',
+                opacity: 0,
+                transform: 'translateY(40px)',
+                willChange: 'transform, opacity',
+              }}
             >
               {MANIFESTO.three}
             </h2>
