@@ -1,5 +1,5 @@
 import { Container } from './Container';
-import { SectionHeader } from './SectionHeader';
+import { RedAccentLine } from './RedAccentLine';
 import { MotionSection } from '../motion/MotionSection';
 import { processStages } from '@/content/process';
 import { cn } from '@/lib/cn';
@@ -8,35 +8,78 @@ import type { Tone } from '@/lib/theme';
 interface HowWeWorkProps {
   tone?: Tone;
   headline?: string;
+  /** Kept for back-compat with V2/V3 call sites — rendered above the title
+   *  as a small uppercase eyebrow if provided. */
   kicker?: string;
 }
 
+/**
+ * Process section. 2 × 2 grid of four stages with a numbered red
+ * square chip, a bold sans heading, and a body paragraph. Editorial,
+ * open, no card chrome.
+ */
 export function HowWeWork({
   tone = 'light',
   headline = 'How We Work',
-  kicker = 'Process',
+  kicker,
 }: HowWeWorkProps) {
   const isDark = tone === 'dark';
   return (
     <MotionSection
       id="process"
-      className={cn('py-section-y', isDark ? 'bg-navy-700 text-slate-200' : 'bg-white text-navy-500')}
+      className={cn(
+        'relative py-section-y',
+        isDark ? 'bg-navy-700 text-slate-200' : 'bg-white text-navy-400',
+      )}
     >
+      <RedAccentLine />
       <Container>
-        <SectionHeader kicker={kicker} title={headline} />
-        <ol className="grid gap-8 md:grid-cols-2 md:gap-12 lg:grid-cols-4">
+        {/* Section heading */}
+        <div className="mb-block-y flex flex-col gap-3">
+          {kicker ? (
+            <span className="font-sans text-fluid-xs font-bold uppercase tracking-[0.18em] text-red-intextor">
+              {kicker}
+            </span>
+          ) : null}
+          <h2
+            className={cn('font-serif leading-[1.1]', isDark && 'text-white')}
+            style={isDark ? undefined : { fontSize: '40px', color: '#223A5E' }}
+          >
+            {headline}
+          </h2>
+        </div>
+
+        {/* 2 × 2 grid of process stages */}
+        <ol className="grid gap-x-10 gap-y-14 md:grid-cols-2 md:gap-x-20 md:gap-y-20">
           {processStages.map((stage) => (
-            <li key={stage.index} className="relative">
+            <li key={stage.index} className="flex max-w-xl flex-col items-start">
+              {/* Small red numbered square */}
               <span
-                className={cn(
-                  'mb-4 inline-block font-serif text-fluid-3xl',
-                  isDark ? 'text-red-intextor' : 'text-red-intextor',
-                )}
+                aria-hidden
+                className="mb-6 inline-flex h-10 w-10 items-center justify-center bg-red-intextor font-sans text-fluid-sm font-bold text-white md:mb-8 md:h-12 md:w-12 md:text-fluid-base"
               >
                 {String(stage.index).padStart(2, '0')}
               </span>
-              <h3 className="font-serif text-fluid-xl">{stage.title}</h3>
-              <p className="mt-3 text-fluid-base opacity-80">{stage.body}</p>
+
+              {/* Stage title */}
+              <h3
+                className={cn(
+                  'font-sans text-fluid-2xl font-bold leading-[1.15]',
+                  isDark ? 'text-white' : 'text-navy-400',
+                )}
+              >
+                {stage.title}
+              </h3>
+
+              {/* Body paragraph */}
+              <p
+                className={cn(
+                  'mt-4 font-sans text-fluid-base leading-relaxed',
+                  isDark ? 'text-slate-200/80' : 'text-navy-400',
+                )}
+              >
+                {stage.body}
+              </p>
             </li>
           ))}
         </ol>

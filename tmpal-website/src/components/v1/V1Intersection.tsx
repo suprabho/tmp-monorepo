@@ -3,49 +3,47 @@ import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { MANIFESTO } from '@/content/copy';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-/* ─── Geometry (px) ─────────────────────────────────────────────
- * The two semi-* fragments tile precisely into tmpal-x-mark.png:
- *
- *   ┌────────────┐
- *   │  semi-x-1  │ … top-left anchor
- *   │            │
- *   │       ╲    │
- *   │        ╲   │
- *   │  semi-x-2  │ … bottom-right anchor
- *   └────────────┘
- *
- * Sizes are taken from the source PNGs so the proportions are exact —
- * no scaling, no stretching, no morphing on assembly.
+/* ─── Geometry (px, from source PNGs) ─────────────────────────
+ * The two semi-* fragments tile precisely into tmpal-x-mark.png
+ * when anchored to opposing corners of the X-mark bounding box.
+ * No scaling, no morphing — the assembled result is identical
+ * to the X-mark.
  */
 const X_MARK = { w: 917, h: 912 };
 const FRAG_1 = { w: 420, h: 424 }; // anchors top-left of X_MARK
 const FRAG_2 = { w: 408, h: 412 }; // anchors bottom-right of X_MARK
 
+/* ─── Stage colours (semantic) ─── */
+const NAVY = '#142338';
+const STONE = '#D5D9DF';
+const RED = '#FE1116';
+
 /**
- * V1 Intersection — pinned, scroll-scrubbed assembly of the brand mark.
+ * V1 Intersection — pinned, scroll-scrubbed assembly of the brand mark
+ * with three sequential manifesto lines that swap in sync with the stage.
  *
  * Strict phase sequence (normalised 0 → 1):
  *
- *   A · 0    → 0.40   Converge. Fragments translate only (no rotation,
- *                      scale, or morph) onto their corner anchors so the
+ *   A · 0    → 0.40   Converge. Fragments translate only — no rotation,
+ *                      scale, or morph — onto corner anchors so the
  *                      tiled result matches tmpal-X-mark exactly.
- *   B · 0.40 → 0.50   Hold connected on navy → stone cross-fade. No
- *                      movement on the mark itself.
- *   C · 0.50 → 0.95   One slow rotation (linear ease) across 45% of
- *                      the timeline. Starts only after assembly is
- *                      complete and the stage is grey.
- *   D · 0.82 → 0.95   Stone → red cross-fade during the last portion
- *                      of the rotation, so the spin completes ON the
- *                      red stage.
- *   E · 0.95 → 1.0    Settled. Assembled mark on red, perfectly stable.
- *
- * The section is pinned for the full timeline so the next section only
- * appears once the choreography settles in phase E.
+ *                      Line 1 ("More than a symbol — a structural form.")
+ *                      visible in white on navy.
+ *   B · 0.40 → 0.50   Hold + stage navy → stone. Line 1 fades up out;
+ *                      Line 2 fades up in (navy on stone) once the bg
+ *                      has settled.
+ *   C · 0.50 → 0.95   Single slow rotation. Line 2 ("Inspired by
+ *                      engineered intersections.") stays in navy.
+ *   D · 0.82 → 0.95   Stone → red. Line 2 fades up out; Line 3 fades
+ *                      up in (white on red) as the rotation completes.
+ *   E · 0.95 → 1.0    Settled. Line 3 ("Built with precision at every
+ *                      edge.") locked, stage solid red.
  */
 export function V1Intersection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -54,114 +52,126 @@ export function V1Intersection() {
   const groupRef = useRef<HTMLDivElement>(null);
   const frag1Ref = useRef<HTMLDivElement>(null);
   const frag2Ref = useRef<HTMLDivElement>(null);
-  const eyebrowRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const line1Ref = useRef<HTMLHeadingElement>(null);
+  const line2Ref = useRef<HTMLHeadingElement>(null);
+  const line3Ref = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const ctx = gsap.context(() => {
-      // Initial offsets: fragments sit at 1.4× their own size away from the
-      // anchor, on the diagonal axis. Pure translation — no rotation, no
-      // scaling — so the fragments preserve their exact geometry.
-      gsap.set(frag1Ref.current, { xPercent: -140, yPercent: -140 });
-      gsap.set(frag2Ref.current, { xPercent: 140, yPercent: 140 });
-      gsap.set(groupRef.current, { rotation: 0 });
-      gsap.set(bgRef.current, { backgroundColor: '#142338' });
-      gsap.set(eyebrowRef.current, { color: 'rgba(255,255,255,0.55)' });
-      gsap.set(headlineRef.current, { color: '#ffffff' });
+    // ── Initial state ───────────────────────────────────────────
+    gsap.set(frag1Ref.current, { xPercent: -140, yPercent: -140 });
+    gsap.set(frag2Ref.current, { xPercent: 140, yPercent: 140 });
+    gsap.set(groupRef.current, { rotation: 0 });
+    gsap.set(bgRef.current, { backgroundColor: NAVY });
+    // Line 1 starts visible; lines 2 and 3 wait below their final position.
+    gsap.set(line1Ref.current, { opacity: 1, y: 0 });
+    gsap.set(line2Ref.current, { opacity: 0, y: 40 });
+    gsap.set(line3Ref.current, { opacity: 0, y: 40 });
 
-      if (prefersReducedMotion) {
-        gsap.set([frag1Ref.current, frag2Ref.current], { xPercent: 0, yPercent: 0 });
-        gsap.set(bgRef.current, { backgroundColor: '#FE1116' });
-        gsap.set(headlineRef.current, { color: '#ffffff' });
-        gsap.set(eyebrowRef.current, { color: 'rgba(255,255,255,0.85)' });
-        return;
-      }
+    if (prefersReducedMotion) {
+      // Skip the choreography — land on the final assembled red state.
+      gsap.set([frag1Ref.current, frag2Ref.current], { xPercent: 0, yPercent: 0 });
+      gsap.set(bgRef.current, { backgroundColor: RED });
+      gsap.set(line1Ref.current, { opacity: 0 });
+      gsap.set(line2Ref.current, { opacity: 0 });
+      gsap.set(line3Ref.current, { opacity: 1, y: 0 });
+      return;
+    }
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: '+=2800',
-          scrub: 1.2,
-          pin: stageRef.current,
-          pinSpacing: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      });
+    const tl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.6,
+        invalidateOnRefresh: true,
+      },
+    });
 
-      // ── Phase A (0 → 0.40): converge ──────────────────────────────
-      // Pure translation onto corner anchors. semi-x-1 glides down+right;
-      // semi-x-2 glides up+left. No other transforms, so the assembled
-      // result matches tmpal-X-mark exactly.
-      tl.to(
-        frag1Ref.current,
-        { xPercent: 0, yPercent: 0, duration: 0.40, ease: 'power2.inOut' },
-        0,
-      );
-      tl.to(
-        frag2Ref.current,
-        { xPercent: 0, yPercent: 0, duration: 0.40, ease: 'power2.inOut' },
-        0,
-      );
+    // ── Phase A · 0 → 0.40: converge ────────────────────────────
+    tl.to(
+      frag1Ref.current,
+      { xPercent: 0, yPercent: 0, duration: 0.40, ease: 'power2.inOut' },
+      0,
+    );
+    tl.to(
+      frag2Ref.current,
+      { xPercent: 0, yPercent: 0, duration: 0.40, ease: 'power2.inOut' },
+      0,
+    );
 
-      // ── Phase B (0.40 → 0.50): hold + navy → stone cross-fade ─────
-      // No movement on the mark itself — it sits perfectly assembled
-      // while the stage transitions to grey beneath it. Eyebrow +
-      // headline shift to navy-on-stone in step.
-      tl.to(bgRef.current, { backgroundColor: '#D5D9DF', duration: 0.10, ease: 'none' }, 0.40);
-      tl.to(headlineRef.current, { color: '#142338', duration: 0.10, ease: 'none' }, 0.40);
-      tl.to(
-        eyebrowRef.current,
-        { color: 'rgba(20,35,56,0.7)', duration: 0.10, ease: 'none' },
-        0.40,
-      );
+    // Line 1 → exits upward just before the stage starts changing.
+    tl.to(
+      line1Ref.current,
+      { opacity: 0, y: -40, duration: 0.06, ease: 'power2.in' },
+      0.34,
+    );
 
-      // ── Phase C (0.50 → 0.95): slow single rotation ───────────────
-      // Linear ease across 45% of the timeline = one slow, steady turn.
-      // Rotation begins only after fragments are connected and the stage
-      // is grey, so the spin reads on the stone background.
-      tl.to(
-        groupRef.current,
-        { rotation: 360, duration: 0.45, ease: 'none' },
-        0.50,
-      );
+    // ── Phase B · 0.40 → 0.50: hold + navy → stone ──────────────
+    tl.to(bgRef.current, { backgroundColor: STONE, duration: 0.10 }, 0.40);
 
-      // ── Phase D (0.82 → 0.95): stone → red while rotation finishes ─
-      // Background and text shift to red during the final portion of the
-      // rotation, so the spin completes ON the red stage rather than
-      // before it. By 0.95 the rotation has landed at 360° exactly.
-      tl.to(bgRef.current, { backgroundColor: '#FE1116', duration: 0.13, ease: 'none' }, 0.82);
-      tl.to(headlineRef.current, { color: '#ffffff', duration: 0.13, ease: 'none' }, 0.82);
-      tl.to(
-        eyebrowRef.current,
-        { color: 'rgba(255,255,255,0.85)', duration: 0.13, ease: 'none' },
-        0.82,
-      );
+    // Line 2 → enters from below with fade once the stone bg has settled.
+    tl.fromTo(
+      line2Ref.current,
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 0.10, ease: 'power3.out' },
+      0.50,
+    );
 
-      // ── Phase E (0.95 → 1.0): perfectly stable ─────────────────────
-      // No tweens in this range — assembled X-mark on red stage, frozen.
-    }, sectionRef);
+    // ── Phase C · 0.50 → 0.95: slow single rotation ─────────────
+    tl.to(groupRef.current, { rotation: 360, duration: 0.45 }, 0.50);
 
-    return () => ctx.revert();
+    // Line 2 → exits upward before stone → red begins.
+    tl.to(
+      line2Ref.current,
+      { opacity: 0, y: -40, duration: 0.06, ease: 'power2.in' },
+      0.76,
+    );
+
+    // ── Phase D · 0.82 → 0.95: stone → red ──────────────────────
+    tl.to(bgRef.current, { backgroundColor: RED, duration: 0.13 }, 0.82);
+
+    // Line 3 → enters from below as the red stage establishes.
+    tl.fromTo(
+      line3Ref.current,
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 0.10, ease: 'power3.out' },
+      0.88,
+    );
+
+    // ── Phase E · 0.95 → 1.0: settled (no tweens) ───────────────
+
+    // Recalculate positions after Next/Image lazy layout settles.
+    const refreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 100);
+
+    return () => {
+      window.clearTimeout(refreshTimer);
+      tl.scrollTrigger?.kill();
+      tl.kill();
+    };
   }, []);
 
+  // Shared classes for the three swapping lines. They live in the same
+  // CSS-grid cell so they overlay precisely; opacity + y are the only
+  // properties the timeline touches.
+  const lineCls =
+    'col-start-1 row-start-1 mx-auto max-w-[28ch] text-center ' +
+    'font-serif text-fluid-display-sm leading-[1.1]';
+
   return (
-    <section ref={sectionRef} className="relative">
-      <div ref={stageRef} className="relative h-screen w-full overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="relative w-full"
+      style={{ minHeight: '400vh' }}
+    >
+      <div ref={stageRef} className="sticky top-0 h-screen w-full overflow-hidden">
         <div ref={bgRef} className="absolute inset-0 bg-navy-700" />
 
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6">
-          <div
-            ref={eyebrowRef}
-            className="mb-6 font-sans text-fluid-xs uppercase tracking-[0.24em]"
-          >
-            Where intent meets manufacture
-          </div>
-
+        <div className="relative z-10 flex h-full flex-col items-center justify-center gap-12 px-6">
           {/* Mark container — sized to the X-mark's exact aspect so the two
               fragments tile correctly when anchored to opposing corners. */}
           <div
@@ -189,7 +199,8 @@ export function V1Intersection() {
                 fill
                 priority
                 sizes="(max-width: 1024px) 24vw, 14vw"
-                className="object-contain object-center"
+                className="select-none object-contain object-center"
+                draggable={false}
               />
             </div>
 
@@ -209,17 +220,51 @@ export function V1Intersection() {
                 fill
                 priority
                 sizes="(max-width: 1024px) 24vw, 14vw"
-                className="object-contain object-center"
+                className="select-none object-contain object-center"
+                draggable={false}
               />
             </div>
           </div>
 
-          <h2
-            ref={headlineRef}
-            className="mt-12 max-w-2xl text-center font-serif text-fluid-display-sm leading-[1.05]"
-          >
-            Two halves. <span className="italic">One mark.</span>
-          </h2>
+          {/* Three swappable manifesto lines — overlaid via CSS grid so they
+              occupy the same cell, and timeline-controlled opacity / y. */}
+          <div className="grid w-full max-w-3xl">
+            <h2
+              ref={line1Ref}
+              className={lineCls}
+              style={{
+                color: '#ffffff',
+                opacity: 1,
+                willChange: 'transform, opacity',
+              }}
+            >
+              {MANIFESTO.one}
+            </h2>
+            <h2
+              ref={line2Ref}
+              className={lineCls}
+              style={{
+                color: NAVY,
+                opacity: 0,
+                transform: 'translateY(40px)',
+                willChange: 'transform, opacity',
+              }}
+            >
+              {MANIFESTO.two}
+            </h2>
+            <h2
+              ref={line3Ref}
+              className={lineCls}
+              style={{
+                color: '#ffffff',
+                opacity: 0,
+                transform: 'translateY(40px)',
+                willChange: 'transform, opacity',
+              }}
+            >
+              {MANIFESTO.three}
+            </h2>
+          </div>
         </div>
       </div>
     </section>
