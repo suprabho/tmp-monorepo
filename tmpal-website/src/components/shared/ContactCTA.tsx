@@ -8,6 +8,12 @@ interface ContactCTAProps {
   href?: string;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  /**
+   * Visual shape. `pill` (default) keeps the rounded-full Contact CTA used
+   * across canonical / v2 / drawer. `square` is the V3 rectangular treatment:
+   * 0 border-radius, forced solid #FE1116 bg + white text regardless of tone.
+   */
+  shape?: 'pill' | 'square';
 }
 
 const sizes = {
@@ -26,19 +32,24 @@ export function ContactCTA({
   href = '#contact',
   className,
   size = 'md',
+  shape = 'pill',
 }: ContactCTAProps) {
+  const square = shape === 'square';
   return (
     <Link
       href={href}
       className={cn(
-        'inline-flex items-center justify-center rounded-full font-sans font-medium tracking-tight transition-colors',
+        'inline-flex items-center justify-center font-sans font-medium tracking-tight transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-intextor focus-visible:ring-offset-2',
         sizes[size],
-        tone === 'dark'
-          ? 'bg-red-intextor text-white hover:bg-red-intextor/90 focus-visible:ring-offset-navy-700'
-          : tone === 'editorial'
-            ? 'bg-navy-500 text-white hover:bg-navy-700 focus-visible:ring-offset-editorial'
-            : 'bg-red-intextor text-white hover:bg-red-intextor/90',
+        square ? 'rounded-none' : 'rounded-full',
+        square
+          ? 'bg-red-intextor text-white hover:bg-red-intextor/90'
+          : tone === 'dark'
+            ? 'bg-red-intextor text-white hover:bg-red-intextor/90 focus-visible:ring-offset-navy-700'
+            : tone === 'editorial'
+              ? 'bg-navy-500 text-white hover:bg-navy-700 focus-visible:ring-offset-editorial'
+              : 'bg-red-intextor text-white hover:bg-red-intextor/90',
         className,
       )}
     >

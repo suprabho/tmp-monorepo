@@ -18,7 +18,9 @@ interface NavigationProps {
 const navStyles = {
   'solid-light': 'bg-white/70 text-navy-500 backdrop-blur',
   'transparent-dark': 'text-white',
-  'rule-line': 'bg-editorial/70 text-navy-500 backdrop-blur',
+  // V3: solid white nav so the hero image (which bleeds to the right edge,
+  // anchored to the section top) doesn't peek through behind the bar.
+  'rule-line': 'bg-white text-navy-500',
 };
 
 /**
@@ -33,23 +35,68 @@ export function Navigation({ tone = 'light', variant = 'solid-light' }: Navigati
         <Link href="/" className="inline-flex items-center" aria-label="TMP — home">
           <Logo tone={tone === 'dark' ? 'light' : 'dark'} className="text-2xl md:text-3xl" />
         </Link>
-        <nav aria-label="Primary" className="hidden items-center gap-10 md:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="group relative px-1 py-3 font-sans text-fluid-base font-medium tracking-tight transition-colors duration-fast ease-out-quart hover:text-red-intextor"
-            >
-              {item.label}
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-x-0 bottom-1.5 h-[5px] origin-left scale-x-0 bg-red-intextor transition-transform duration-base ease-out-quart group-hover:scale-x-100"
-              />
-            </Link>
-          ))}
-        </nav>
+        {variant === 'rule-line' ? (
+          // V3: each item is wrapped in its own 1px #D5D9DF-bordered box. On
+          // hover/focus/active a 5px #FE1116 bar slides in along the bottom,
+          // sitting flush over the bottom border. The bar is a direct child of
+          // the <li> with -left-px / -right-px / -bottom-px, so its outer edges
+          // line up exactly with the li's outer border-box — covering the
+          // bottom border edge-to-edge without bleeding outside.
+          <nav aria-label="Primary" className="hidden items-center md:flex">
+            <ul className="flex items-center">
+              {navItems.map((item, i) => (
+                <li
+                  key={item.href}
+                  className={cn(
+                    'group relative border border-stone-100',
+                    i > 0 && '-ml-px',
+                  )}
+                >
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      'peer inline-flex items-center justify-center px-6 py-3 font-sans text-fluid-base font-medium tracking-tight',
+                      'transition-colors duration-fast ease-out-quart',
+                      'hover:text-red-intextor aria-[current=page]:text-red-intextor',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-intextor focus-visible:ring-offset-2',
+                      'lg:px-8',
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                  <span
+                    aria-hidden
+                    className={cn(
+                      'pointer-events-none absolute -bottom-px -left-px -right-px h-[5px] origin-center scale-x-0 bg-red-intextor',
+                      'transition-transform duration-base ease-out-quart',
+                      'group-hover:scale-x-100 peer-focus-visible:scale-x-100 peer-aria-[current=page]:scale-x-100',
+                    )}
+                  />
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ) : (
+          <nav aria-label="Primary" className="hidden items-center gap-10 md:flex">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group relative px-1 py-3 font-sans text-fluid-base font-medium tracking-tight transition-colors duration-fast ease-out-quart hover:text-red-intextor"
+              >
+                {item.label}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-0 bottom-1.5 h-[5px] origin-left scale-x-0 bg-red-intextor transition-transform duration-base ease-out-quart group-hover:scale-x-100"
+                />
+              </Link>
+            ))}
+          </nav>
+        )}
         <div className="hidden md:block">
-          <ContactCTA tone={tone} />
+          {/* V3 (rule-line) gets a rectangular red Contact button to match its hero CTA;
+              other variants keep the pill. */}
+          <ContactCTA tone={tone} shape={variant === 'rule-line' ? 'square' : 'pill'} />
         </div>
         <button
           type="button"
