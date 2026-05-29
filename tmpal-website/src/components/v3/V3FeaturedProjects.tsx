@@ -1,102 +1,303 @@
-import { MotionSection } from '@/components/motion/MotionSection';
-import { Container } from '@/components/shared/Container';
+'use client';
+
+import Image from 'next/image';
+import { useCallback, useState } from 'react';
+import { cn } from '@/lib/cn';
 
 interface FeaturedProject {
-  title: string;
-  location: string;
-  collaborator: string;
   family: string;
-  year: number;
+  title: string;
+  subtitle: string;
+  image: string;
 }
 
-const featured: FeaturedProject[] = [
+const projects: FeaturedProject[] = [
   {
-    title: 'Vault House',
-    location: 'Alibaug',
-    collaborator: 'Studio Lotus',
     family: 'Facades',
-    year: 2024,
+    title: 'Vault House',
+    subtitle: 'Alibaug, with Studio Lotus',
+    image: '/projects/home1.png',
   },
   {
-    title: 'Bridge Tower',
-    location: 'Mumbai',
-    collaborator: 'Studio Mumbai',
     family: 'Facades',
-    year: 2023,
+    title: 'Curved Envelope',
+    subtitle: 'Mumbai · 2023',
+    image: '/projects/home2.png',
+  },
+  {
+    family: 'Custom Metal',
+    title: 'Spray-Coat Atelier',
+    subtitle: 'Pune · 2022',
+    image: '/projects/hero-spraycoating.png',
+  },
+  {
+    family: 'Fenestration',
+    title: 'Villa Aragost',
+    subtitle: 'Bengaluru · 2021',
+    image: '/projects/v1-hero.png',
   },
 ];
 
 /**
- * V3's featured-work section. Sits BEFORE the editorial line-draw stack.
+ * v3 Selected Work — spacious paired-row carousel.
  *
- * Layout matches the Figma comp: kicker "SELECTED WORK", a serif lede
- * line, then two horizontally-laid project cards. Each card has a red
- * info block on one side and a wide image on the other.
+ * Spacing spec
+ *   • 120px L/R section padding.
+ *   • 100px gap between header and the first row.
+ *   • 120px gap between Row 1 and Row 2.
+ *   • 80px horizontal gap between card and image inside each row.
+ *
+ * Layout grid
+ *   [ prev ] [ project rows ] [ next ]
+ *   Arrows live in their own auto columns and are vertically centred on
+ *   Row 1's height. The middle 1fr column hosts the stacked rows.
+ *
+ * Both arrows are entirely neutral grey — no border, no red stroke at
+ * any state. They cycle through pairs in either direction (wrap on
+ * boundaries).
  */
 export function V3FeaturedProjects() {
+  const PAIR = 2;
+  const pageCount = Math.ceil(projects.length / PAIR);
+  const [page, setPage] = useState(0);
+
+  const next = useCallback(
+    () => setPage((p) => (p + 1) % pageCount),
+    [pageCount],
+  );
+  const prev = useCallback(
+    () => setPage((p) => (p - 1 + pageCount) % pageCount),
+    [pageCount],
+  );
+
+  const a = projects[(page * PAIR) % projects.length];
+  const b = projects[(page * PAIR + 1) % projects.length];
+
   return (
-    <MotionSection id="projects" className="bg-editorial pb-section-y pt-section-y text-navy-500">
-      <Container>
-        <div className="mb-block-y flex flex-col gap-4">
-          <span className="font-sans text-fluid-sm font-medium uppercase tracking-[0.2em] text-red-intextor">
-            Selected Work
-          </span>
-          <p className="max-w-3xl font-serif text-fluid-3xl leading-snug text-navy-500">
-            Projects where <em className="italic">drawing</em> and{' '}
-            <em className="italic">steel</em> met without compromise.
-          </p>
+    <section
+      id="projects"
+      // Full-bleed section (no max-w-shell Container) so the layout grows
+      // with the viewport. 120px L/R padding per spec.
+      //
+      // `relative z-10`: the partners strip above us is lifted -340px into
+      // the hero, which means the hero's own positioned box overlaps the
+      // top of this section. Without our own stacking context the hero
+      // would paint on top of the lede heading and hide line 1.
+      //
+      // pt-20 = 80px top padding, replacing the larger py-section-y on top
+      // only — gives ~80px between the partners section's last logo and
+      // the Selected Work heading per the compact-spacing spec. Bottom
+      // stays pb-section-y so the gap to the next section is unchanged.
+      className="relative z-10 bg-white pb-section-y pt-20 text-navy-500 px-6 sm:px-10 md:px-16 lg:px-[120px]"
+    >
+      {/* Header — 100px below the intro */}
+      <div className="mb-16 flex flex-col gap-5 lg:mb-[100px]">
+        <p className="max-w-3xl font-serif text-fluid-3xl leading-snug text-navy-500">
+          Projects where <em className="italic text-red-intextor/90">drawing</em>{' '}
+          and <em className="italic text-red-intextor/90">steel</em> met
+          <br />
+          without compromise.
+        </p>
+        <span className="font-sans text-fluid-sm font-medium uppercase tracking-[0.22em] text-red-intextor">
+          Selected Work
+        </span>
+      </div>
+
+      {/* Carousel body: [prev] [rows] [next] */}
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-[auto_1fr_auto] md:gap-10 lg:gap-14">
+        {/* Prev — vertically centred on Row 1 via a fixed-height flex column. */}
+        <div className="hidden md:flex md:h-[480px] md:items-center lg:h-[560px]">
+          <CarouselNav direction="prev" onClick={prev} />
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2 md:gap-6">
-          {featured.map((p) => (
-            <article
-              key={p.title}
-              className="group relative grid overflow-hidden rounded-3xl bg-white grid-cols-[1.2fr_1fr]"
-            >
-              <div className="relative aspect-[5/6] w-full overflow-hidden bg-navy-100">
-                <div className="absolute inset-0 grid place-items-center text-navy-400/40">
-                  <span className="font-sans text-fluid-sm uppercase tracking-[0.2em]">
-                    {p.title}
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-col justify-between bg-red-intextor p-5 text-white md:p-7">
-                <div className="flex flex-col gap-1">
-                  <span className="font-sans text-fluid-xs font-medium uppercase tracking-[0.18em] text-white/80">
-                    {p.family}
-                  </span>
-                  <h3 className="mt-2 font-serif text-fluid-2xl leading-tight">{p.title}</h3>
-                  <p className="font-serif italic text-fluid-base text-white/90">
-                    {p.location}, with {p.collaborator}
-                  </p>
-                </div>
-                <div className="flex items-center justify-between text-fluid-sm">
-                  <span className="text-white/70">{p.year}</span>
-                  <span className="font-sans font-medium" aria-hidden>
-                    →
-                  </span>
-                </div>
-              </div>
-            </article>
-          ))}
+        {/* Project rows — keyed on page for the soft fade-in on swap. */}
+        <div
+          key={page}
+          className="flex flex-col gap-16 v3-fade-in md:gap-24 lg:gap-[120px]"
+        >
+          <ProjectRow project={a} variant="card-portrait" />
+          <ProjectRow project={b} variant="landscape-card" />
         </div>
 
-        {/* Pagination dots / Prev-Next affordance matching the comp */}
-        <div className="mt-8 flex items-center justify-end gap-6 text-fluid-sm text-navy-400">
-          <button
-            type="button"
-            className="font-sans font-medium hover:text-red-intextor"
-          >
-            ← Prev
-          </button>
-          <button
-            type="button"
-            className="font-sans font-medium hover:text-red-intextor"
-          >
-            Next →
-          </button>
+        {/* Next — mirrored on the right. */}
+        <div className="hidden md:flex md:h-[480px] md:items-center lg:h-[560px]">
+          <CarouselNav direction="next" onClick={next} />
         </div>
-      </Container>
-    </MotionSection>
+
+        {/* Mobile: both controls below the rows, spread apart. */}
+        <div className="flex justify-between gap-4 md:hidden">
+          <CarouselNav direction="prev" onClick={prev} />
+          <CarouselNav direction="next" onClick={next} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ----------------------------- subcomponents ---------------------------- */
+
+interface ProjectRowProps {
+  project: FeaturedProject;
+  variant: 'card-portrait' | 'landscape-card';
+}
+
+function ProjectRow({ project, variant }: ProjectRowProps) {
+  const cardOnLeft = variant === 'card-portrait';
+  const card = (
+    <ProjectCard
+      family={project.family}
+      title={project.title}
+      subtitle={project.subtitle}
+      // Row 1 (card-portrait): scoop opens DOWN toward the image on the right.
+      // Row 2 (landscape-card): scoop opens UP toward the image's top-right.
+      cutoutCorner={cardOnLeft ? 'br' : 'tl'}
+    />
+  );
+  const image = (
+    <ProjectImage title={project.title} src={project.image} />
+  );
+  // Row 1 (card + portrait): tall, square-ish.
+  // Row 2 (landscape + card): shorter, wide.
+  const rowHeight =
+    variant === 'card-portrait'
+      ? 'min-h-[400px] md:h-[480px] lg:h-[560px]'
+      : 'min-h-[320px] md:h-[340px] lg:h-[400px]';
+  return (
+    // 96px horizontal gap between card and image — slightly wider than the
+    // previous 80px so the central crossicon can sit with the requested
+    // 24px clearance on each side (96 − 48 icon)/2 = 24.
+    <div
+      className={cn(
+        'relative grid grid-cols-2 gap-x-10 md:gap-x-16 lg:gap-x-[96px]',
+        rowHeight,
+      )}
+    >
+      {cardOnLeft ? (
+        <>
+          {card}
+          {image}
+        </>
+      ) : (
+        <>
+          {image}
+          {card}
+        </>
+      )}
+
+      {/* Cross-icon visual connector. Absolutely centred on the row, so it
+          sits in the middle of the gap (the gap is symmetric, so the row's
+          geometric centre coincides with the gap's centre). A square 40px
+          mobile / 48px desktop container with object-contain preserves the
+          PNG's natural ~1.12 aspect inside the box; the box never overlaps
+          the card or image because (gap − box) / 2 = 24px clearance. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-1/2 z-10 h-10 w-10 -translate-x-1/2 -translate-y-1/2 md:h-12 md:w-12"
+      >
+        <Image
+          src="/projects/crossicon.png"
+          alt=""
+          fill
+          sizes="48px"
+          className="object-contain"
+        />
+      </div>
+    </div>
+  );
+}
+
+interface ProjectCardProps {
+  family: string;
+  title: string;
+  subtitle: string;
+  /** Which corner gets the large quarter-circle scoop. */
+  cutoutCorner: 'br' | 'bl' | 'tl' | 'tr';
+}
+
+const cutoutClasses: Record<ProjectCardProps['cutoutCorner'], string> = {
+  br: 'rounded-br-[140px] lg:rounded-br-[180px]',
+  bl: 'rounded-bl-[140px] lg:rounded-bl-[180px]',
+  tl: 'rounded-tl-[140px] lg:rounded-tl-[180px]',
+  tr: 'rounded-tr-[140px] lg:rounded-tr-[180px]',
+};
+
+function ProjectCard({
+  family,
+  title,
+  subtitle,
+  cutoutCorner,
+}: ProjectCardProps) {
+  return (
+    <div
+      className={cn(
+        'relative flex h-full items-center justify-center bg-red-intextor px-8 py-10 text-white md:px-12 lg:px-16',
+        cutoutClasses[cutoutCorner],
+      )}
+    >
+      <div className="flex max-w-md flex-col items-center gap-2 text-center">
+        <h3 className="font-sans text-fluid-xl font-bold leading-tight tracking-tight">
+          {family}, {title}
+        </h3>
+        <p className="font-serif text-fluid-base italic leading-snug text-white/80">
+          {subtitle}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+interface ProjectImageProps {
+  title: string;
+  src: string;
+}
+
+function ProjectImage({ title, src }: ProjectImageProps) {
+  return (
+    <div className="group relative h-full w-full overflow-hidden">
+      <Image
+        src={src}
+        alt={`${title} — architectural project`}
+        fill
+        sizes="45vw"
+        // saturate-[.75] = 25% reduction; keeps contrast/lighting intact.
+        className="object-cover saturate-[.75] transition-transform duration-500 ease-out-quart group-hover:scale-[1.05]"
+      />
+    </div>
+  );
+}
+
+interface CarouselNavProps {
+  direction: 'prev' | 'next';
+  onClick: () => void;
+}
+
+function CarouselNav({ direction, onClick }: CarouselNavProps) {
+  const isPrev = direction === 'prev';
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={isPrev ? 'Previous projects' : 'Next projects'}
+      // Neutral grey square — no border, no red ring at any state.
+      // Hover/focus darken slightly to confirm interactivity.
+      className="grid h-16 w-16 shrink-0 place-items-center border-0 bg-stone-50 text-navy-700 transition-colors duration-fast ease-out-quart hover:bg-stone-100 focus:outline-none focus-visible:bg-stone-100 md:h-20 md:w-20 lg:h-24 lg:w-24"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        width="28"
+        height="28"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        aria-hidden
+        className={isPrev ? 'rotate-180' : ''}
+      >
+        <path
+          d="M5 12h14M13 6l6 6-6 6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </button>
   );
 }
