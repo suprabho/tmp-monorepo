@@ -113,10 +113,30 @@ export function V3FeaturedProjects() {
         {/* Project rows — keyed on page for the soft fade-in on swap. */}
         <div
           key={page}
-          className="flex flex-col gap-16 v3-fade-in md:gap-24 lg:gap-[120px]"
+          className="relative flex flex-col gap-16 v3-fade-in md:gap-24 lg:gap-[120px]"
         >
           <ProjectRow project={a} variant="card-portrait" />
           <ProjectRow project={b} variant="landscape-card" />
+
+          {/* Single cross-icon at the central intersection where all four
+              cards meet. Horizontally it sits on the column gap (x = 50%);
+              vertically it sits at the midpoint of the inter-row gap — i.e.
+              Row 1's height plus half the gap below it (base 400+32, md
+              480+48, lg 560+60). Sized to stay inside the gap cross so its
+              arms never reach into the cards.
+
+              Loaded from Cossicon2.svg (1237×1102, two opposing rounded
+              corners). The source SVG carries `vector-effect:
+              non-scaling-stroke`, so its hairline stays a crisp, constant
+              width even at this small display size (a plain stroked PNG/SVG
+              would go sub-pixel and vanish here). Decorative. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            aria-hidden
+            alt=""
+            src="/projects/Cossicon2.svg"
+            className="pointer-events-none absolute left-1/2 top-[432px] z-10 w-9 -translate-x-1/2 -translate-y-1/2 md:top-[528px] md:w-14 lg:top-[620px] lg:w-20"
+          />
         </div>
 
         {/* Next — mirrored on the right. */}
@@ -163,12 +183,9 @@ function ProjectRow({ project, variant }: ProjectRowProps) {
       ? 'min-h-[400px] md:h-[480px] lg:h-[560px]'
       : 'min-h-[320px] md:h-[340px] lg:h-[400px]';
   return (
-    // 96px horizontal gap between card and image — slightly wider than the
-    // previous 80px so the central crossicon can sit with the requested
-    // 24px clearance on each side (96 − 48 icon)/2 = 24.
     <div
       className={cn(
-        'relative grid grid-cols-2 gap-x-10 md:gap-x-16 lg:gap-x-[96px]',
+        'grid grid-cols-2 gap-x-10 md:gap-x-16 lg:gap-x-[96px]',
         rowHeight,
       )}
     >
@@ -183,25 +200,6 @@ function ProjectRow({ project, variant }: ProjectRowProps) {
           {card}
         </>
       )}
-
-      {/* Cross-icon visual connector. Absolutely centred on the row, so it
-          sits in the middle of the gap (the gap is symmetric, so the row's
-          geometric centre coincides with the gap's centre). A square 40px
-          mobile / 48px desktop container with object-contain preserves the
-          PNG's natural ~1.12 aspect inside the box; the box never overlaps
-          the card or image because (gap − box) / 2 = 24px clearance. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 z-10 h-10 w-10 -translate-x-1/2 -translate-y-1/2 md:h-12 md:w-12"
-      >
-        <Image
-          src="/projects/crossicon.png"
-          alt=""
-          fill
-          sizes="48px"
-          className="object-contain"
-        />
-      </div>
     </div>
   );
 }
