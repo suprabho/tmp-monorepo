@@ -35,15 +35,16 @@ export default function V3Page() {
       <Navigation tone="editorial" variant="rule-line" />
       <main id="main" className="bg-editorial">
         <V3Hero />
-        {/* Compact partners row, lifted up into the white/fade area at the
-            bottom of the hero so the caption + logos sit immediately under
-            the building image instead of a section-y gap below it. */}
+        {/* Compact partners row. On desktop it tucks gently into the white
+            space at the bottom-left of the hero (the building occupies the
+            right ~58%); on mobile it simply follows the stacked hero in
+            normal flow so it never rides up over the image band. */}
         <PartnersStrip
           tone="light"
           caption="Trusted by teams from leading companies"
           logos={v3Logos}
           compact
-          className="relative z-10 -mt-[240px] md:-mt-[300px] lg:-mt-[340px]"
+          className="relative z-10 md:-mt-[140px] lg:-mt-[180px]"
         />
         <V3FeaturedProjects />
         <V3EditorialStack />

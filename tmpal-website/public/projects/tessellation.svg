@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Four-way curved cross motif: quarter-circle arcs centred on each tile
+       corner. Four surrounding tiles complete a full circle at every lattice
+       vertex, so the pattern repeats seamlessly on both axes. Each arc is drawn
+       as 3 concentric, equally-spaced strokes (r = 88 / 100 / 112). -->
+  <g fill="none" stroke="#667A9A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- top-left -->
+    <path d="M88,0 A88,88 0 0 1 0,88" />
+    <path d="M100,0 A100,100 0 0 1 0,100" />
+    <path d="M112,0 A112,112 0 0 1 0,112" />
+    <!-- top-right -->
+    <path d="M112,0 A88,88 0 0 0 200,88" />
+    <path d="M100,0 A100,100 0 0 0 200,100" />
+    <path d="M88,0 A112,112 0 0 0 200,112" />
+    <!-- bottom-right -->
+    <path d="M200,112 A88,88 0 0 0 112,200" />
+    <path d="M200,100 A100,100 0 0 0 100,200" />
+    <path d="M200,88 A112,112 0 0 0 88,200" />
+    <!-- bottom-left -->
+    <path d="M0,112 A88,88 0 0 1 88,200" />
+    <path d="M0,100 A100,100 0 0 1 100,200" />
+    <path d="M0,88 A112,112 0 0 1 112,200" />
+  </g>
+</svg>
