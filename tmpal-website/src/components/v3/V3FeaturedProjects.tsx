@@ -105,42 +105,85 @@ export function V3FeaturedProjects() {
 
       {/* Carousel body: [prev] [rows] [next] */}
       <div className="grid grid-cols-1 gap-10 md:grid-cols-[auto_1fr_auto] md:gap-10 lg:gap-14">
-        {/* Prev — vertically centred on Row 1 via a fixed-height flex column. */}
-        <div className="hidden md:flex md:h-[480px] md:items-center lg:h-[560px]">
+        {/* Prev — stretches to the cell grid's height and centres its button. */}
+        <div className="hidden md:flex md:items-center">
           <CarouselNav direction="prev" onClick={prev} />
         </div>
 
-        {/* Project rows — keyed on page for the soft fade-in on swap. */}
+        {/* Project cells — keyed on page for the soft fade-in on swap.
+            The container is locked to Cossicon2.svg's aspect ratio, which is
+            now square (1160 × 1160). Each of the four cells is absolutely
+            positioned to the SVG's own edge percentages, so the SVG (inset-0)
+            overlays the gaps precisely at every viewport. A square container
+            means 1 viewBox unit is the same px on both axes, so all four gap
+            arms render at an equal width.
+
+            The SVG is a symmetric cross centred at x=y=580 in the 1160 box
+            (i.e. 50%), with 200-unit rounded corners. So every cell is exactly
+            half the box — 50% × 50% — touching the strokes at the centre line.
+            The two cards (top-left, bottom-right) own the rounded scoops; the
+            two images sit in the opposite corners.
+
+            Then every cell is pulled back from the centre by a single `--gap`
+            (subtracted from each inner-facing edge) and the card scoop radius
+            is reduced by the same `--gap`, so the navy line floats with an
+            equal visual gap to every red div and image. Because the container
+            is square, a single px `--gap` reads as uniform all the way around. */}
         <div
           key={page}
-          className="relative flex flex-col gap-16 v3-fade-in md:gap-24 lg:gap-[120px]"
+          // `container-type: inline-size` makes this box a query container so
+          // children can size against ITS width with `cqw` units. That lets
+          // the card scoop radius (`--cut`) be an exact fraction of the same
+          // width the cell percentages use — keeping the card arc concentric
+          // with the SVG arc, so the gap is identical on flats and curve.
+          className="relative aspect-square w-full v3-fade-in [--gap:clamp(10px,1.1vw,22px)] [container-type:inline-size]"
         >
-          <ProjectRow project={a} variant="card-portrait" />
-          <ProjectRow project={b} variant="landscape-card" />
+          {/* Top-left — project A card, br scoop opening toward the centre. */}
+          <div className="absolute left-0 top-0 h-[calc(50%_-_var(--gap))] w-[calc(50%_-_var(--gap))]">
+            <ProjectCard
+              family={a.family}
+              title={a.title}
+              subtitle={a.subtitle}
+              cutoutCorner="br"
+            />
+          </div>
 
-          {/* Single cross-icon at the central intersection where all four
-              cards meet. Horizontally it sits on the column gap (x = 50%);
-              vertically it sits at the midpoint of the inter-row gap — i.e.
-              Row 1's height plus half the gap below it (base 400+32, md
-              480+48, lg 560+60). Sized to stay inside the gap cross so its
-              arms never reach into the cards.
+          {/* Top-right — project A image. */}
+          <div className="absolute right-0 top-0 h-[calc(50%_-_var(--gap))] w-[calc(50%_-_var(--gap))]">
+            <ProjectImage title={a.title} src={a.image} />
+          </div>
 
-              Loaded from Cossicon2.svg (1237×1102, two opposing rounded
-              corners). The source SVG carries `vector-effect:
-              non-scaling-stroke`, so its hairline stays a crisp, constant
-              width even at this small display size (a plain stroked PNG/SVG
-              would go sub-pixel and vanish here). Decorative. */}
+          {/* Bottom-left — project B image. */}
+          <div className="absolute bottom-0 left-0 h-[calc(50%_-_var(--gap))] w-[calc(50%_-_var(--gap))]">
+            <ProjectImage title={b.title} src={b.image} />
+          </div>
+
+          {/* Bottom-right — project B card, tl scoop opening toward the centre. */}
+          <div className="absolute bottom-0 right-0 h-[calc(50%_-_var(--gap))] w-[calc(50%_-_var(--gap))]">
+            <ProjectCard
+              family={b.family}
+              title={b.title}
+              subtitle={b.subtitle}
+              cutoutCorner="tl"
+            />
+          </div>
+
+          {/* Cross-line overlay. Filling the square container exactly, its
+              two opposing rounded corners (radius 200 / 1160 ≈ 17.24% of
+              width) land on the card scoops, and its strokes fall in the gaps.
+              `vector-effect: non-scaling-stroke` in the source keeps the
+              hairline a crisp, constant 2px at any width. Decorative. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             aria-hidden
             alt=""
             src="/projects/Cossicon2.svg"
-            className="pointer-events-none absolute left-1/2 top-[432px] z-10 w-9 -translate-x-1/2 -translate-y-1/2 md:top-[528px] md:w-14 lg:top-[620px] lg:w-20"
+            className="pointer-events-none absolute inset-0 z-10 h-full w-full"
           />
         </div>
 
         {/* Next — mirrored on the right. */}
-        <div className="hidden md:flex md:h-[480px] md:items-center lg:h-[560px]">
+        <div className="hidden md:flex md:items-center">
           <CarouselNav direction="next" onClick={next} />
         </div>
 
@@ -156,54 +199,6 @@ export function V3FeaturedProjects() {
 
 /* ----------------------------- subcomponents ---------------------------- */
 
-interface ProjectRowProps {
-  project: FeaturedProject;
-  variant: 'card-portrait' | 'landscape-card';
-}
-
-function ProjectRow({ project, variant }: ProjectRowProps) {
-  const cardOnLeft = variant === 'card-portrait';
-  const card = (
-    <ProjectCard
-      family={project.family}
-      title={project.title}
-      subtitle={project.subtitle}
-      // Row 1 (card-portrait): scoop opens DOWN toward the image on the right.
-      // Row 2 (landscape-card): scoop opens UP toward the image's top-right.
-      cutoutCorner={cardOnLeft ? 'br' : 'tl'}
-    />
-  );
-  const image = (
-    <ProjectImage title={project.title} src={project.image} />
-  );
-  // Row 1 (card + portrait): tall, square-ish.
-  // Row 2 (landscape + card): shorter, wide.
-  const rowHeight =
-    variant === 'card-portrait'
-      ? 'min-h-[400px] md:h-[480px] lg:h-[560px]'
-      : 'min-h-[320px] md:h-[340px] lg:h-[400px]';
-  return (
-    <div
-      className={cn(
-        'grid grid-cols-2 gap-x-10 md:gap-x-16 lg:gap-x-[96px]',
-        rowHeight,
-      )}
-    >
-      {cardOnLeft ? (
-        <>
-          {card}
-          {image}
-        </>
-      ) : (
-        <>
-          {image}
-          {card}
-        </>
-      )}
-    </div>
-  );
-}
-
 interface ProjectCardProps {
   family: string;
   title: string;
@@ -212,11 +207,23 @@ interface ProjectCardProps {
   cutoutCorner: 'br' | 'bl' | 'tl' | 'tr';
 }
 
+// The scoop radius must equal the rounded corners drawn into Cossicon2.svg so
+// the red card's curve reads as one continuous line with the navy stroke. In
+// that SVG each corner is a circular quarter-arc of radius 200 units inside a
+// 1160-wide square viewBox — i.e. 200 / 1160 = 17.2414% of the SVG's rendered
+// width. The SVG fills the square rows container, so the card radius must be
+// that same 17.2414% of the container width. We get it exactly with
+// `--cut: 17.2414cqw` (set on the card; see ProjectCard), which resolves
+// against the container's inline size thanks to its `container-type:
+// inline-size`. The rendered radius is `--cut - --gap` so the card arc sits
+// one gap inside the SVG arc while remaining concentric with it — that
+// concentricity is what keeps the gap uniform around the curve, not just
+// along the straight edges.
 const cutoutClasses: Record<ProjectCardProps['cutoutCorner'], string> = {
-  br: 'rounded-br-[140px] lg:rounded-br-[180px]',
-  bl: 'rounded-bl-[140px] lg:rounded-bl-[180px]',
-  tl: 'rounded-tl-[140px] lg:rounded-tl-[180px]',
-  tr: 'rounded-tr-[140px] lg:rounded-tr-[180px]',
+  br: 'rounded-br-[calc(var(--cut)_-_var(--gap))]',
+  bl: 'rounded-bl-[calc(var(--cut)_-_var(--gap))]',
+  tl: 'rounded-tl-[calc(var(--cut)_-_var(--gap))]',
+  tr: 'rounded-tr-[calc(var(--cut)_-_var(--gap))]',
 };
 
 function ProjectCard({
@@ -229,6 +236,14 @@ function ProjectCard({
     <div
       className={cn(
         'relative flex h-full items-center justify-center bg-red-intextor px-8 py-10 text-white md:px-12 lg:px-16',
+        // --cut = the SVG's corner radius as an exact fraction of the rows
+        // container's width: 200 / 1160 = 17.2414%, expressed in `cqw`
+        // (1cqw = 1% of the container's inline size). Exactness matters — the
+        // card arc and the SVG arc are concentric only when this equals the
+        // SVG radius precisely, which is what makes the curve gap match the
+        // straight gap. The actual rounded radius is `--cut - --gap` (below),
+        // pulling the card arc inward by one gap while staying concentric.
+        '[--cut:17.2414cqw]',
         cutoutClasses[cutoutCorner],
       )}
     >
