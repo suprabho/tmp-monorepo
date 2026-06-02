@@ -55,15 +55,7 @@ export function SystemFamilies({
               )}
             >
               {/* Photo */}
-              <div className="relative aspect-[4/5] w-full overflow-hidden bg-navy-50">
-                <Image
-                  src={f.image}
-                  alt={`${f.title} — TMPal architectural metal`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                />
-
+              <div className="relative aspect-[4/5] w-full overflow-hidden bg-navy-500 bg-[url('/projects/tessellation.svg')] bg-[length:200px] bg-repeat">
                 {/* TMP stroke-icon overlay — fades in on hover, centred. */}
                 <div
                   aria-hidden
