@@ -76,7 +76,7 @@ export function V3Hero() {
           the section and bottom-aligned, clearing the text column. */}
       <div className="flex pointer-events-none -mt-[14vw] md:-mt-[18rem] lg:-mt-[24rem] relative w-full ">
         <Image
-          src="/projects/hero%20image%20exper.png"
+          src="/projects/hero image exper.png"
           alt="Sweeping curved architectural façade — a fluid metal envelope wrapping a glazed structure"
           width={4210}
           height={2664}
