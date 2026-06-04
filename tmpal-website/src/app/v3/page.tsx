@@ -1,12 +1,13 @@
 import { Navigation } from '@/components/shared/Navigation';
-import { Footer } from '@/components/shared/Footer';
+import { V3Footer } from '@/components/v3/V3Footer';
 import { PartnersStrip, type PartnerLogo } from '@/components/shared/PartnersStrip';
 import { SystemFamilies } from '@/components/shared/SystemFamilies';
-import { HowWeWork } from '@/components/shared/HowWeWork';
+import { ProcessCards } from '@/components/shared/ProcessCards';
 import { ProcuralBlock } from '@/components/shared/ProcuralBlock';
+import { StatementBand } from '@/components/shared/StatementBand';
 import { V3Hero } from '@/components/v3/V3Hero';
 import { V3FeaturedProjects } from '@/components/v3/V3FeaturedProjects';
-import { V3EditorialStack } from '@/components/v3/V3EditorialStack';
+import { V3BrandStory } from '@/components/v3/V3BrandStory';
 
 export const metadata = {
   title: 'V3 / Editorial',
@@ -47,16 +48,17 @@ export default function V3Page() {
           className="relative z-10 md:-mt-[140px] lg:-mt-[180px]"
         />
         <V3FeaturedProjects />
-        <V3EditorialStack />
+        <V3BrandStory />
         <SystemFamilies
           tone="light"
           headline="Three system families. One factory."
           layout="stacked-editorial"
         />
-        <HowWeWork tone="light" headline="Four stages, one team." kicker="Process" />
+        <ProcessCards headline="Four stages, one team." kicker="Process" />
         <ProcuralBlock tone="light" emphasis="prominent" />
+        <StatementBand />
       </main>
-      <Footer tone="light" />
+      <V3Footer />
     </>
   );
 }

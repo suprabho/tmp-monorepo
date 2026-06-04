@@ -56,38 +56,55 @@ export function ProcuralBlock({ tone = 'light', emphasis = 'subtle' }: ProcuralB
     );
   }
 
-  // Light tone — the V1 minimal architectural treatment.
-  return (
-    <MotionSection
-      id="partnership"
-      className="py-section-y text-navy-500"
-      style={{ backgroundColor: 'rgba(213, 217, 223, 0.4)' }}
-    >
-      <Container>
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr] md:items-center md:gap-20">
-          {/* Copy */}
-          <div className="flex flex-col">
-            <h2
-              className="font-serif leading-[1.1]"
-              style={{ fontSize: '40px', color: '#223A5E' }}
-            >
-              Partnership
-            </h2>
-            <p className="mt-6 max-w-xl font-serif text-fluid-xl leading-[1.4] text-navy-500/85">
-              {PROCURAL_BLOCK_TEXT}
-            </p>
-          </div>
+  // Light tone — premium architectural panel. "a global building systems
+  // brand" is lifted into the TMPal italic serif; the closing sentence drops
+  // to a 20px supporting line beneath the headline.
+  const ITALIC_PHRASE = 'a global building systems brand';
+  const [beforePhrase, afterPhrase] = PROCURAL_BLOCK_TEXT.split(ITALIC_PHRASE);
+  const bodyText = afterPhrase.replace(/^\.\s*/, '');
 
-          {/* Logo plate — dark navy backdrop so the white-suffix wordmark reads */}
-          <div className="flex items-center justify-center bg-navy-700 px-8 py-12 md:px-12 md:py-16">
-            <Image
-              src="/projects/procural-logo-white.png"
-              alt="Procural"
-              width={1001}
-              height={437}
-              className="h-auto w-full max-w-[280px] md:max-w-[320px]"
-              priority={false}
-            />
+  return (
+    <MotionSection id="partnership" className="bg-white py-section-y text-navy-500">
+      <Container>
+        {/* Large rounded panel — thin blue-grey border, asymmetric large
+            top-left / bottom-right radii in the TMPal corner language. */}
+        <div className="rounded-tl-[96px] rounded-br-[96px] border border-slate-350/60 bg-white p-10 md:p-[80px]">
+          <div className="grid gap-14 md:grid-cols-[1.25fr_1fr] md:items-center md:gap-24">
+            {/* Copy */}
+            <div className="flex flex-col">
+              <span className="font-sans text-fluid-sm font-medium uppercase tracking-[0.18em] text-red-intextor">
+                Partnership
+              </span>
+              <h2
+                className="mt-5 font-serif leading-[1.1] text-navy-500"
+                style={{ fontSize: 'clamp(56px, 1.2vw + 3rem, 64px)' }}
+              >
+                {beforePhrase}
+                {/* Italic phrase held at its prior size, not scaled with the
+                    larger headline. */}
+                <em
+                  className="italic text-navy-500"
+                  style={{ fontSize: 'clamp(30px, 2.2vw + 0.5rem, 46px)' }}
+                >
+                  {ITALIC_PHRASE}.
+                </em>
+              </h2>
+              <p className="mt-6 max-w-xl font-sans text-[20px] leading-relaxed text-navy-500/75">
+                {bodyText}
+              </p>
+            </div>
+
+            {/* Logo — large, vertically centred on the panel. */}
+            <div className="flex items-center justify-center md:justify-end">
+              <Image
+                src="/projects/procural-logo.png"
+                alt="Procural"
+                width={383}
+                height={131}
+                className="h-auto w-full max-w-[420px] md:max-w-[490px]"
+                priority={false}
+              />
+            </div>
           </div>
         </div>
       </Container>

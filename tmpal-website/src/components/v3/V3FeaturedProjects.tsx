@@ -193,6 +193,14 @@ export function V3FeaturedProjects() {
           <CarouselNav direction="next" onClick={next} />
         </div>
       </div>
+
+      {/* Connector — continues the Cossicon2 cross-line (#465A78) down from
+          the carousel to this section's bottom edge, where it meets the Brand
+          Story line for one continuous flow. Centred on the carousel axis. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute bottom-0 left-1/2 hidden h-[200px] w-[2px] -translate-x-1/2 rounded-full bg-[#465A78] md:block"
+      />
     </section>
   );
 }

@@ -63,14 +63,16 @@ export function PartnersStrip({
             // generous gaps so the strip still feels editorial despite being
             // shorter vertically.
             <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 lg:gap-16">
-              <p
-                className={cn(
-                  'font-sans text-fluid-sm uppercase tracking-[0.18em]',
-                  isDark ? 'text-slate-200/60' : 'text-navy-400',
-                )}
-              >
-                {caption}
-              </p>
+              {caption ? (
+                <p
+                  className={cn(
+                    'font-sans text-fluid-sm uppercase tracking-[0.18em]',
+                    isDark ? 'text-slate-200/60' : 'text-navy-400',
+                  )}
+                >
+                  {caption}
+                </p>
+              ) : null}
               {logos.map((l) => (
                 <Image
                   key={l.name}

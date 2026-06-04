@@ -36,7 +36,7 @@ export function V3Hero() {
           body/CTA row. On md+ the column is capped so the building has room
           on the right. */}
       <Container className="flex z-10">
-        <div className="flex flex-col gap-7 md:gap-8 md:max-w-[640px] md:pt-16 lg:max-w-[720px]">
+        <div className="flex flex-col gap-7 md:gap-8 md:max-w-[640px] md:translate-y-[30%] md:pt-16 lg:max-w-[720px]">
           {/* Heading. The `whitespace-nowrap` span groups "meets making."
               so the wrap is always either single-line or breaks before
               "meets" — never separating "meets" and "making." onto
@@ -76,10 +76,10 @@ export function V3Hero() {
           the section and bottom-aligned, clearing the text column. */}
       <div className="flex pointer-events-none -mt-[14vw] md:-mt-[18rem] lg:-mt-[24rem] relative w-full ">
         <Image
-          src="/projects/hero-banner-building.png"
+          src="/projects/hero%20image%20exper.png"
           alt="Sweeping curved architectural façade — a fluid metal envelope wrapping a glazed structure"
-          width={2400}
-          height={1350}
+          width={4210}
+          height={2664}
           priority
           className="h-auto w-full object-contain"
         />
