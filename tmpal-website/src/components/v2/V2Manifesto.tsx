@@ -1,18 +1,23 @@
 'use client';
+import Image from 'next/image';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { useRef } from 'react';
-import { PlusMark } from '@/components/shared/PlusMark';
 import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 import { HALF_CLIP_BOTTOM_RIGHT, HALF_CLIP_TOP_LEFT } from '@/lib/crossGeometry';
 import { MANIFESTO } from '@/content/copy';
 import { cn } from '@/lib/cn';
 
 /**
- * V2 manifesto — same skeletal choreography as V1 but with a **metallic**
- * cross and a softer slab palette (no red slab). Fragments enter from the
- * corners (mirroring V2Hero's scroll-out), reassemble in slab 1, rotate
- * through slab 2 and 3, then **scale down + z-index drop** at the very
- * end so the cross can pass behind the Families clip-images that follow.
+ * V2 manifesto — scroll-scrubbed assembly of the red **intersection-mark**.
+ *
+ * The mark is rendered as two diagonal halves (the same asset clipped to
+ * opposite triangles). They start pushed apart toward opposite corners and,
+ * as the user scrolls, glide together until they align into the complete,
+ * exact intersection-mark. Once assembled it rotates (slab 2 → 3), then holds
+ * while the existing scale/bridge behaviour folds it behind the Families
+ * clip-images that follow.
+ *
+ *   Split → Move together → Merge → Rotate → Hold.
  */
 
 const SNAP_AT = 0.7 / 3;
@@ -39,15 +44,12 @@ export function V2Manifesto() {
   const brX = useSpring(brXRaw, spring);
   const brY = useSpring(brYRaw, spring);
 
-  const rotate = useTransform(scrollYProgress, [0, 1 / 3, 2 / 3, 1], [0, 0, 45, 90]);
-  // Slab 3 scales up (1 → 1.3) then immediately scales DOWN at the very end
-  // for the "fold behind families" bridge.
-  const scale = useTransform(scrollYProgress, [0, 2 / 3, 0.92, 1], [1, 1, 1.3, 0.18]);
-  const opacity = useTransform(scrollYProgress, [0, 0.05, 0.92, 1], [0, 1, 1, 0.85]);
-  // Move the cross slightly down-right at the bridge so it ends parked
-  // behind the centre family card.
-  const bridgeX = useTransform(scrollYProgress, [0.92, 1], [0, 0]);
-  const bridgeY = useTransform(scrollYProgress, [0.92, 1], [0, 80]);
+  // Once assembled, spin a full turn so it lands back in its ORIGINAL
+  // orientation (not stuck at 90°/flipped).
+  const rotate = useTransform(scrollYProgress, [0, 1 / 3, 2 / 3, 1], [0, 0, 180, 360]);
+  // After the rotation the mark simply holds — full size, original position,
+  // no shrink/bridge.
+  const opacity = useTransform(scrollYProgress, [0, 0.05, 1], [0, 1, 1]);
 
   return (
     <div ref={sectionRef} className="relative">
@@ -56,15 +58,23 @@ export function V2Manifesto() {
       <Slab background="bg-white" textTone="text-navy-500" line={MANIFESTO.three} />
 
       <div className="pointer-events-none absolute inset-0">
-        <div className="sticky top-0 flex h-dvh items-center justify-center">
+        <div className="sticky top-0 flex h-dvh items-end justify-center pb-20 md:items-center md:pb-0">
+          {/* Static wrapper offsets the whole mark to the right on desktop;
+              centred on phones. Doesn't touch the framer-motion transforms on
+              the stage below. */}
+          <div className="translate-x-0 md:translate-x-[60%]">
+          {/* Breathing wrapper — gentle continuous scale pulse, kept separate
+              from the framer-motion rotate so the two transforms don't fight. */}
+          <div className="manifesto-breath">
           <motion.div
             className="relative h-[clamp(220px,40vw,520px)] w-[clamp(220px,40vw,520px)]"
             style={
               reduced
                 ? undefined
-                : { rotate, scale, opacity, x: bridgeX, y: bridgeY }
+                : { rotate, opacity }
             }
           >
+            {/* Top-left triangular half of the intersection-mark. */}
             <motion.div
               className="absolute inset-0"
               style={
@@ -73,8 +83,10 @@ export function V2Manifesto() {
                   : { x: tlX, y: tlY, clipPath: HALF_CLIP_TOP_LEFT }
               }
             >
-              <PlusMark variant="metallic" className="h-full w-full" />
+              <MarkHalf />
             </motion.div>
+            {/* Bottom-right triangular half — same asset, opposite clip, so the
+                two reassemble into the exact original mark. */}
             <motion.div
               className="absolute inset-0"
               style={
@@ -83,12 +95,35 @@ export function V2Manifesto() {
                   : { x: brX, y: brY, clipPath: HALF_CLIP_BOTTOM_RIGHT }
               }
             >
-              <PlusMark variant="metallic" className="h-full w-full" />
+              <MarkHalf />
             </motion.div>
           </motion.div>
+          </div>
+          </div>
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * A full copy of the red intersection-mark filling the square stage box.
+ * Two of these are stacked under opposite diagonal clips; because they're the
+ * identical asset at the identical size/position, overlapping them reproduces
+ * the exact original mark with an invisible seam. `object-contain` preserves
+ * the asset's true proportions.
+ */
+function MarkHalf() {
+  return (
+    <Image
+      src="/brand/intersection-mark.svg"
+      alt=""
+      aria-hidden
+      width={593}
+      height={590}
+      priority
+      className="h-full w-full object-contain"
+    />
   );
 }
 

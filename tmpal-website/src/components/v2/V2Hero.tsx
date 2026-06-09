@@ -1,46 +1,28 @@
 'use client';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Container } from '@/components/shared/Container';
-import { PlusMark } from '@/components/shared/PlusMark';
 import { RevealText } from '@/components/motion/RevealText';
 import { HERO_HEADLINE, HERO_SUBHEAD } from '@/content/copy';
-import { CROSS_VIEWBOX, HALF_CLIP_BOTTOM_RIGHT, HALF_CLIP_TOP_LEFT, crossPath } from '@/lib/crossGeometry';
-import { useReducedMotionSafe } from '@/hooks/useReducedMotionSafe';
 
 /**
- * v2 hero — dark navy with the metallic cross at rest on the right.
+ * v2 hero — dark navy, vertically centred.
  *
- * A faux architectural-photo gradient is **clipped inside the cross
- * silhouette** behind the metallic plate so the cross reads as a window
- * into the building. As the user scrolls out of the hero, the two halves
- * of the metallic cross slide apart to opposite corners — by the time
- * the manifesto section enters, fragments are at max separation.
+ * Left: headline, subhead, CTA, trust line.
+ * Right: the "V2 hero" architectural photo, layered above a large red
+ * intersection-mark that sits behind the image's lower-left corner. ~30–40%
+ * of the mark is hidden by the photo; the rest reads as a brand accent
+ * spilling out beneath the image.
  */
 export function V2Hero() {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotionSafe();
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end start'],
-  });
-
-  // Fragments start centred (0) and exit toward their corners on scroll.
-  const tlX = useTransform(scrollYProgress, [0, 1], [0, -90]);
-  const tlY = useTransform(scrollYProgress, [0, 1], [0, -90]);
-  const brX = useTransform(scrollYProgress, [0, 1], [0, 90]);
-  const brY = useTransform(scrollYProgress, [0, 1], [0, 90]);
-
   return (
     <section
-      ref={ref}
       id="top"
-      className="relative overflow-hidden bg-navy-700 pt-16 text-white md:pt-24"
+      className="relative overflow-hidden bg-navy-700 pt-8 pb-[32vw] text-white md:pt-10 md:pb-[19vw]"
     >
       <Container>
-        <div className="grid items-center gap-10 pb-section-y md:grid-cols-[1.1fr_1fr] md:gap-12">
+        <div className="grid items-center gap-8 md:grid-cols-[1fr_1.05fr] md:gap-16">
+          {/* Left — copy */}
           <div className="flex flex-col gap-6 md:gap-8">
             <RevealText
               words={[...HERO_HEADLINE]}
@@ -64,79 +46,46 @@ export function V2Hero() {
             </div>
           </div>
 
-          {/* The cross visual — photo clipped inside cross silhouette,
-              with the metallic plate layered above. */}
-          <div className="relative h-[clamp(280px,50vw,640px)] w-full">
-            <div className="absolute inset-0 grid place-items-center">
-              <div className="relative h-[clamp(240px,42vw,540px)] w-[clamp(240px,42vw,540px)]">
-                {/* Photo clipped inside the cross silhouette */}
-                <CrossClipPhoto className="absolute inset-0 h-full w-full" />
+          {/* Right — hero image + red intersection-mark.
+              Mobile: the group goes full-bleed (negative margins cancel the
+              container padding), so the photo can touch the right screen edge
+              and the mark the left edge. Desktop: capped at 80% width and
+              right-aligned, the negative right margin pulling the photo past
+              the container padding so it sits on the right edge. */}
+          <div className="relative -mx-5 sm:-mx-8 md:mx-0 md:w-[80%] md:ml-auto md:-mr-12 xl:-mr-20">
+            {/* Red brand mark.
+                Mobile: flush to the LEFT screen edge, beside the photo's
+                lower-left and horizontally clear of it — fully visible, never
+                behind the image, never cropped.
+                Desktop: larger, pushed far down-left so only its top-right
+                corner tucks under the photo. */}
+            <div className="pointer-events-none absolute bottom-[-42%] left-0 z-0 w-[38%] md:bottom-[-46%] md:left-[-44%] md:w-[58%]">
+              <Image
+                src="/brand/intersection-mark.svg"
+                alt=""
+                aria-hidden
+                width={593}
+                height={590}
+                className="h-auto w-full"
+              />
+            </div>
 
-                {/* Metallic cross plate on top, in two halves that slide on scroll */}
-                <motion.div
-                  className="absolute inset-0"
-                  style={
-                    reduced
-                      ? { clipPath: HALF_CLIP_TOP_LEFT }
-                      : { x: tlX, y: tlY, clipPath: HALF_CLIP_TOP_LEFT }
-                  }
-                >
-                  <PlusMark variant="metallic" className="h-full w-full" />
-                </motion.div>
-                <motion.div
-                  className="absolute inset-0"
-                  style={
-                    reduced
-                      ? { clipPath: HALF_CLIP_BOTTOM_RIGHT }
-                      : { x: brX, y: brY, clipPath: HALF_CLIP_BOTTOM_RIGHT }
-                  }
-                >
-                  <PlusMark variant="metallic" className="h-full w-full" />
-                </motion.div>
-              </div>
+            {/* The V2 hero photo. Mobile: 70% width, pushed to the right edge.
+                Desktop: fills the column. The aspect box crops the right ~30%
+                of the frame (object-left keeps the left 70%). */}
+            <div className="relative z-10 ml-auto w-[70%] aspect-[2775/2678] overflow-hidden md:ml-0 md:w-full">
+              <Image
+                src="/projects/V2 hero.png"
+                alt="Architectural metal-mesh façade wrapping a glazed building"
+                width={3964}
+                height={2678}
+                priority
+                className="h-full w-full object-cover object-left"
+              />
             </div>
           </div>
         </div>
       </Container>
     </section>
-  );
-}
-
-/**
- * An architectural-photo stand-in clipped to the brand cross silhouette.
- * Uses an SVG `<clipPath>` keyed to `crossPath`, then paints a layered
- * gradient that suggests glass-facade reflections.
- *
- * Once real photography is in `/public/hero/`, replace the gradient
- * with `<image href="/hero/v2-dark-facade.jpg" />` inside the clip.
- */
-function CrossClipPhoto({ className }: { className?: string }) {
-  return (
-    <svg viewBox={CROSS_VIEWBOX} className={className} aria-hidden>
-      <defs>
-        <clipPath id="v2-cross-clip">
-          <path d={crossPath} />
-        </clipPath>
-        <linearGradient id="v2-facade" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#1d3050" />
-          <stop offset="35%" stopColor="#2c4368" />
-          <stop offset="70%" stopColor="#1a2940" />
-          <stop offset="100%" stopColor="#142338" />
-        </linearGradient>
-        <pattern id="v2-grid" patternUnits="userSpaceOnUse" width="6" height="9">
-          <path d="M0 0 H6" stroke="rgba(255,255,255,0.12)" strokeWidth="0.4" />
-          <path d="M3 0 V9" stroke="rgba(255,255,255,0.08)" strokeWidth="0.3" />
-        </pattern>
-      </defs>
-      <g clipPath="url(#v2-cross-clip)">
-        <rect x="0" y="0" width="100" height="100" fill="url(#v2-facade)" />
-        <rect x="0" y="0" width="100" height="100" fill="url(#v2-grid)" />
-        {/* Highlight band suggesting a glazing reflection */}
-        <path
-          d="M -10 60 L 110 20 L 110 30 L -10 70 Z"
-          fill="rgba(255,255,255,0.06)"
-        />
-      </g>
-    </svg>
   );
 }

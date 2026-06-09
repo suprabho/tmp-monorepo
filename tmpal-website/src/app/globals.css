@@ -123,6 +123,25 @@
     }
   }
 
+  /* V2 manifesto mark — gentle continuous "breathing" pulse once assembled. */
+  @keyframes manifesto-breath {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+  .manifesto-breath {
+    animation: manifesto-breath 3.2s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .manifesto-breath {
+      animation: none !important;
+    }
+  }
+
   /* V3 Selected Work carousel — soft fade-in when the pair swaps. */
   @keyframes v3-fade-in {
     from {

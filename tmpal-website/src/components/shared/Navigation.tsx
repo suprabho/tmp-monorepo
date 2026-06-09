@@ -11,7 +11,7 @@ import type { Tone } from '@/lib/theme';
 
 interface NavigationProps {
   tone?: Tone;
-  /** Sticky transparent-until-scroll for hero pages with dark backgrounds. */
+  /** Visual treatment: transparent over dark hero backgrounds, etc. */
   variant?: 'solid-light' | 'transparent-dark' | 'rule-line';
 }
 
@@ -30,7 +30,7 @@ const navStyles = {
 export function Navigation({ tone = 'light', variant = 'solid-light' }: NavigationProps) {
   const [open, setOpen] = useState(false);
   return (
-    <header className={cn('sticky top-0 z-30 w-full transition-colors', navStyles[variant])}>
+    <header className={cn('relative z-30 w-full', navStyles[variant])}>
       <Container className="flex items-center justify-between py-4 md:py-5">
         <Link href="/" className="inline-flex items-center" aria-label="TMP — home">
           <Logo tone={tone === 'dark' ? 'light' : 'dark'} className="text-2xl md:text-3xl" />

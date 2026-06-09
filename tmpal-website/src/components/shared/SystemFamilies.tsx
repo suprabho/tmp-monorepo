@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { Container } from './Container';
 import { SectionHeader } from './SectionHeader';
 import { MotionSection } from '../motion/MotionSection';
@@ -14,11 +13,13 @@ interface SystemFamiliesProps {
 }
 
 /**
- * Line-icon per v3 card, ordered to match `families` (facades, fenestration,
- * custom metal). Intrinsic w/h drive each icon's aspect ratio so the CSS mask
- * scales without distortion. Spaces in the filenames are %20-encoded for url().
+ * Line-icon per card, ordered to match `families` (facades → facade icon,
+ * fenestration → window icon, custom metal → custom icon). Used by both the
+ * v3 editorial cards and the v1/v2 grid cards. Intrinsic w/h drive each icon's
+ * aspect ratio so the CSS mask scales without distortion. Spaces in the
+ * filenames are %20-encoded for url().
  */
-const editorialIcons = [
+const familyIcons = [
   // Facade icon is the widest/shortest, so to be as large as possible while
   // staying fully on-card it goes full-bleed (w-full, no side padding) — the
   // max non-clipping size for a wide-aspect mark.
@@ -66,7 +67,7 @@ export function SystemFamilies({
           // the first and third card frames the trio.
           <div className="grid gap-6 md:grid-cols-3">
             {families.map((f, i) => {
-              const icon = editorialIcons[i];
+              const icon = familyIcons[i];
               return (
               <article
                 key={f.slug}
@@ -126,9 +127,11 @@ export function SystemFamilies({
             })}
           </div>
         ) : (
-          // v1 / v2 — original photo-led grid.
+          // v1 / v2 — icon-led grid.
           <div className={cn('grid gap-6', layout === 'grid' && 'md:grid-cols-3')}>
-            {families.map((f) => (
+            {families.map((f, i) => {
+              const icon = familyIcons[i];
+              return (
               <article
                 key={f.slug}
                 className={cn(
@@ -136,21 +139,25 @@ export function SystemFamilies({
                   tone === 'dark' ? 'bg-navy-500/30' : 'bg-white',
                 )}
               >
-                {/* Photo */}
-                <div className="relative aspect-[4/5] w-full overflow-hidden bg-navy-500 bg-[url('/projects/tessellation.svg')] bg-[length:200px] bg-repeat">
-                  {/* TMP stroke-icon overlay — fades in on hover, centred. */}
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
-                  >
-                    <Image
-                      src="/brand/tmp-stroke-icon.svg"
-                      alt=""
-                      width={490}
-                      height={488}
-                      className="w-[55%] max-w-[280px] drop-shadow-[0_4px_24px_rgba(0,0,0,0.18)]"
+                {/* Family line-icon painted via CSS mask, filling the whole
+                    navy panel edge-to-edge (cover) so no space is left. */}
+                <div className="relative aspect-[4/5] w-full overflow-hidden bg-navy-500">
+                  {icon ? (
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 bg-slate-250 transition-transform duration-500 ease-out group-hover:scale-110"
+                      style={{
+                        WebkitMaskImage: `url('${icon.src}')`,
+                        maskImage: `url('${icon.src}')`,
+                        WebkitMaskRepeat: 'no-repeat',
+                        maskRepeat: 'no-repeat',
+                        WebkitMaskPosition: 'center',
+                        maskPosition: 'center',
+                        WebkitMaskSize: 'cover',
+                        maskSize: 'cover',
+                      }}
                     />
-                  </div>
+                  ) : null}
                 </div>
 
                 {/* Title + description */}
@@ -165,7 +172,8 @@ export function SystemFamilies({
                   className="absolute inset-x-0 bottom-0 h-[5px] origin-left scale-x-0 bg-red-intextor transition-transform duration-300 ease-out group-hover:scale-x-100"
                 />
               </article>
-            ))}
+              );
+            })}
           </div>
         )}
       </Container>
