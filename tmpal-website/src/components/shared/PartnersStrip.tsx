@@ -89,17 +89,20 @@ export function PartnersStrip({
               ))}
             </div>
           ) : (
-            <>
+            // Mobile: caption stacked above a centred logo row. Desktop:
+            // caption on the left, logos on the right, both vertically centred
+            // against each other.
+            <div className="flex flex-col items-center gap-8 text-center md:flex-row md:justify-center md:gap-8 md:text-left">
               <p
                 className={cn(
-                  'mb-block-y text-center font-sans text-fluid-sm uppercase tracking-[0.18em]',
+                  'font-sans text-fluid-sm uppercase tracking-[0.18em] md:shrink-0 md:whitespace-nowrap',
                   isDark ? 'text-slate-200/60' : 'text-navy-400',
                 )}
               >
                 {caption}
               </p>
-              {/* Centered row, same explicit height per logo. */}
-              <div className="flex flex-wrap items-center justify-center gap-12 md:gap-20 lg:gap-28">
+              {/* Same explicit height per logo; right-aligned on desktop. */}
+              <div className="flex flex-wrap items-center justify-center gap-12 md:justify-end md:gap-20 lg:gap-28">
                 {logos.map((l) => (
                   <Image
                     key={l.name}
@@ -115,7 +118,7 @@ export function PartnersStrip({
                   />
                 ))}
               </div>
-            </>
+            </div>
           )}
         </Container>
       </section>
